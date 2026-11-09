@@ -113,7 +113,7 @@ the mouse leaves the bar.
 
 The bar is transparent and the icons sit in **islands** (brackets with their own
 background), as in FelixKratz's config: workspaces (one per display) · active app |
-music · tools · input/output · system · date.
+music · tools (tiling, screenshots…) · input/output · system · date.
 
 - **Left:**
   - Each display's workspaces with the icons of their apps, animated on change. A
@@ -128,6 +128,7 @@ music · tools · input/output · system · date.
   |---|---|---|---|
   | Browser music (magenta = playing, grey = paused) | Title | Source, state, previous / play-pause / next, "Go to tab" | |
   | Slack, Teams, Outlook (only when there are unread items) | Unread count | Opens the app | |
+  | Tiling (cyan = on, yellow = off) | State | Turns AeroSpace's tiling off / on (also SUPER + Shift + Escape) | |
   | Screenshots | — | Shottr: area, full screen, window, scrolling; macOS screen recording | |
   | Clipboard | "Portapapeles" | Opens Maccy (presses its shortcut, Shift+Cmd+C, with `helpers/hotkey`) | |
   | Docker (green = containers running, hidden if Docker is not running) | Running count | List; clicking one opens its logs in WezTerm; "Abrir lazydocker" | |
@@ -252,6 +253,7 @@ music · tools · input/output · system · date.
   | SUPER + Space | App launcher |
   | SUPER + Shift + Space | Bar: toggle workspaces / app menus |
   | SUPER + Escape | Lock the screen (presses macOS's Ctrl+Cmd+Q) |
+  | SUPER + Shift + Escape | Turn tiling off / on (`aerospace enable toggle`): when off, every window is shown and left alone |
   | SUPER + C | Area screenshot (Shottr) |
   | SUPER + W / Q | Close window |
   | SUPER + arrows | Move focus |

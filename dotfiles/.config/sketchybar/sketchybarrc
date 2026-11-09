@@ -168,7 +168,14 @@ sketchybar --add event brightness_change \
 island island.io network volume keyboard audio brightness
 gap gap.right3 right
 
-# --- Herramientas: capturas, Docker y avisos sin leer ---
+# --- Herramientas: tiling, capturas, Docker y avisos sin leer ---
+# Tiling de AeroSpace: clic (o SUPER+Shift+Escape) lo desactiva / activa
+sketchybar --add event tiling_change \
+           --add item tiling right \
+           --subscribe tiling tiling_change mouse.clicked $HOVER \
+           --set tiling update_freq=10 icon=󰕰 icon.color=$CYAN \
+                 script="$PLUGIN_DIR/tiling.sh"
+
 sketchybar --add item capture right \
            --subscribe capture mouse.clicked mouse.exited.global \
            --set capture icon=󰄀 icon.color=$MAGENTA label.drawing=off \
@@ -211,7 +218,7 @@ for app in "Slack|slack" "Microsoft Teams|microsoft_teams" "Microsoft Outlook|mi
                    script="$PLUGIN_DIR/notif.sh '$name'"
 done
 
-island island.tools capture clipboard docker '/notif\..*/'
+island island.tools tiling capture clipboard docker '/notif\..*/'
 gap gap.right4 right
 
 # --- Lo que suena en el navegador ---
