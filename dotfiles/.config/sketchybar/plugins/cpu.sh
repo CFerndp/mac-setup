@@ -1,11 +1,15 @@
 #!/bin/bash
 # Uso de CPU: el icono cambia de color con la carga; el % al pasar el ratón.
-# Clic = Monitor de Actividad.
+# Clic = Monitor de Actividad. Clic derecho = btop en WezTerm.
 source "$CONFIG_DIR/colors.sh"
 source "$CONFIG_DIR/plugins/hover.sh"
 
 if [ "$SENDER" = "mouse.clicked" ]; then
-  open -a "Activity Monitor"
+  if [ "$BUTTON" = "right" ]; then
+    /Applications/WezTerm.app/Contents/MacOS/wezterm start -- /opt/homebrew/bin/btop &
+  else
+    open -a "Activity Monitor"
+  fi
   exit 0
 fi
 

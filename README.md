@@ -50,14 +50,15 @@ Brewfile             → everything installed with Homebrew
 
 ## Installed with Homebrew (`setup.sh`)
 
-- **Apps:** Maccy, Shottr, AeroSpace, DBeaver, Postman, Ice, Stats,
-  BetterDisplay, MonitorControl, AppCleaner, Keka, Karabiner-Elements
+- **Apps:** Maccy, Shottr, AeroSpace, DBeaver, Postman, Ice, BetterDisplay, AppCleaner,
+  Keka, Karabiner-Elements
 - **CLI:** btop, duti, fastfetch, SwitchAudioSource (`switchaudio-osx`, for the bar's audio menu)
 - **Look:** SketchyBar and JankyBorders (`borders`), from the `felixkratz/formulae` tap
   (only those two formulae are trusted, with `brew trust`). They are built on the Mac,
   so they need up-to-date Command Line Tools.
 - **Fonts:** JetBrains Mono Nerd Font, sketchybar-app-font
-- Dropped: Rectangle (clashes with AeroSpace), Starship (Powerlevel10k stays)
+- Dropped: Rectangle (clashes with AeroSpace), Starship (Powerlevel10k stays), Stats (the
+  bar already shows CPU, battery and network) and MonitorControl (BetterDisplay does the same)
 
 ## Config files
 
@@ -124,18 +125,22 @@ music · tools · input/output · system · date.
   | Slack, Teams, Outlook (only when there are unread items) | Unread count | Opens the app | |
   | Screenshots | — | Shottr: area, full screen, window, scrolling; macOS screen recording | |
   | Clipboard | "Portapapeles" | Opens Maccy (presses its shortcut, Shift+Cmd+C, with `helpers/hotkey`) | |
-  | Docker (green = containers running, hidden if Docker is not running) | Running count | List; clicking one opens its logs in WezTerm | |
+  | Docker (green = containers running, hidden if Docker is not running) | Running count | List; clicking one opens its logs in WezTerm; "Abrir lazydocker" | |
   | Speaker and mic | Names | Pick a device | Right click: Sound settings |
   | Keyboard | Layout (US / ES / ABC) | Switch | |
   | Volume (the icon shows the level) | % | Slider, mute and playback controls | Scroll wheel: up/down. Right click: Sound settings |
+  | External display brightness (BetterDisplay; hidden without an external display) | % | Slider | Scroll wheel: up/down |
   | Network (Wi-Fi, cable, or red when offline) | Type and IP | macOS Wi-Fi / Network settings | |
-  | CPU (cyan / yellow ≥ 50 % / red ≥ 80 %) | % | Activity Monitor | |
+  | CPU (cyan / yellow ≥ 50 % / red ≥ 80 %) | % | Activity Monitor | Right click: btop in WezTerm |
   | Battery (green / yellow / red when low) | %, charging or time left | — | |
   | Date, Spanish short format "L 09/11 10:37" (weekday initial, day/month, time) | Full date | — | |
 
   The music item may show only "YouTube Music" when that site does not put the song in
   the tab title (for example, while paused).
 - `topmost=on`: the bar stays above the macOS menu bar when the latter shows.
+- The brightness control uses BetterDisplay's CLI (`betterdisplaycli`), so **BetterDisplay
+  must be running**: enable "Launch at login" in its settings. It controls the first
+  display that isn't the laptop's.
 - The clipboard button uses `helpers/hotkey` (`hotkey.swift`): it presses a shortcut at
   keyboard level (`hotkey 8 cmd,shift` = Shift+Cmd+C). Maccy has no other way to be
   opened from outside. If you change its shortcut, change `MACCY_KEY` in `sketchybarrc`.
@@ -234,6 +239,7 @@ music · tools · input/output · system · date.
   | SUPER + Enter | WezTerm |
   | SUPER + Shift + B / Enter | Brave |
   | SUPER + Shift + N / F / T | Zed / Finder / btop |
+  | SUPER + Shift + G | lazygit in WezTerm |
   | SUPER + Space | App launcher |
   | SUPER + Shift + Space | Bar: toggle workspaces / app menus |
   | SUPER + C | Area screenshot (Shottr) |

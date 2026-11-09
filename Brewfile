@@ -64,14 +64,10 @@ cask "karabiner-elements"
 cask "keka"
 # Clipboard manager
 cask "maccy"
-# Tool to control external monitor brightness & volume
-cask "monitorcontrol"
 # AI usage tracker for Cursor, Claude Code, Codex, Copilot and more
 cask "openusage"
 # Screenshot measurement and annotation tool
 cask "shottr"
-# System monitor for the menu bar
-cask "stats"
 # Open-source code editor
 cask "visual-studio-code"
 uv "headroom-ai[all]"

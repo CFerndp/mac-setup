@@ -25,9 +25,7 @@ brew install --cask \
   dbeaver-community \
   postman \
   jordanbaird-ice \
-  stats \
   betterdisplay \
-  monitorcontrol \
   appcleaner \
   keka
 

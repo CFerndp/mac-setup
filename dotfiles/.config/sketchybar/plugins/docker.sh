@@ -31,6 +31,9 @@ if [ "$SENDER" = "mouse.clicked" ]; then
     sketchybar --add item docker.c.none popup.docker \
                --set docker.c.none icon=󰅙 icon.color=$MUTED label="Sin contenedores en marcha" label.color=$MUTED
   fi
+  sketchybar --add item docker.c.lazy popup.docker \
+             --set docker.c.lazy icon=󰨞 icon.color=$MAGENTA label="Abrir lazydocker" \
+                   click_script="sketchybar --set docker popup.drawing=off; $WEZTERM start -- /opt/homebrew/bin/lazydocker"
   sketchybar --add item docker.c.open popup.docker \
              --set docker.c.open icon=󰏌 icon.color=$CYAN label="Abrir Docker Desktop" \
                    click_script="sketchybar --set docker popup.drawing=off; open -a Docker"

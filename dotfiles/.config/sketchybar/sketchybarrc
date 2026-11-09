@@ -151,7 +151,21 @@ sketchybar --add event audio_change \
            --set audio update_freq=15 icon.color=$CYAN label.color=$TEXT \
                  script="$PLUGIN_DIR/audio.sh" $POPUP
 
-island island.io network volume keyboard audio
+# Brillo del monitor externo (BetterDisplay); oculto si no hay monitor externo
+sketchybar --add event brightness_change \
+           --add item brightness right \
+           --subscribe brightness brightness_change display_change mouse.clicked mouse.scrolled mouse.exited.global $HOVER \
+           --set brightness update_freq=60 updates=on icon=󰃟 icon.color=$YELLOW drawing=off \
+                 script="$PLUGIN_DIR/brightness.sh" $POPUP \
+           --add slider brightness.slider popup.brightness 180 \
+           --subscribe brightness.slider mouse.clicked \
+           --set brightness.slider icon=󰃟 icon.color=$YELLOW \
+                 slider.highlight_color=$YELLOW slider.background.height=6 \
+                 slider.background.corner_radius=3 slider.background.color=$SURFACE \
+                 slider.knob=󰝤 slider.knob.color=$CYAN \
+                 script="$PLUGIN_DIR/brightness_slider.sh"
+
+island island.io network volume keyboard audio brightness
 gap gap.right3 right
 
 # --- Herramientas: capturas, Docker y avisos sin leer ---
