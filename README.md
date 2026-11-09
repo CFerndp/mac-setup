@@ -102,6 +102,7 @@ y el clic lleva a más. Los colores avisan sin tener que pasar el ratón.
   | Docker (verde = hay contenedores, oculto si Docker no corre) | Nº en marcha | Lista; clic en uno abre sus logs en WezTerm |
   | Altavoz y micro | Nombres | Elegir dispositivo |
   | Teclado | Distribución (US / ES / ABC) | Cambiar |
+  | Red (Wi-Fi, cable o rojo sin conexión) | Tipo e IP | Abre los ajustes de Wi-Fi / red del sistema |
   | Volumen (el icono indica el nivel) | % | Deslizador, silencio y controles de reproducción |
   | CPU (cian / amarillo ≥ 50 % / rojo ≥ 80 %) | % | — |
   | Batería (verde / amarillo / rojo si está baja) | %, cargando o tiempo restante | — |
