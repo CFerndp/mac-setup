@@ -84,6 +84,11 @@ for i in $(seq 1 15); do
                    label.font="$FONT:$([ $i = 1 ] && echo Bold || echo Regular):13.0" \
                    click_script="$HELPERS/menus select $i"
 done
+# Botón » con los menús que no caben antes del notch (lo gestiona helpers/notch.py)
+sketchybar --add item menu.more left \
+           --subscribe menu.more mouse.clicked mouse.exited.global \
+           --set menu.more display=active drawing=off icon=󰄾 icon.color=$MAGENTA \
+                 label.drawing=off script="$PLUGIN_DIR/popup.sh" $POPUP
 island island.app front_app '/menu\..*/'
 
 # =============================== Derecha ===============================
@@ -211,7 +216,16 @@ sketchybar --add item media right \
                  click_script="sketchybar --set media popup.drawing=off; $FOCUS_TAB"
 island island.media media
 
+# =============================== Notch ===============================
+# Detecta la pantalla con cámara y vuelve a ajustar cuando cambian las pantallas
+NOTCH="python3 $HELPERS/notch.py"
+sketchybar --add item notch.watch left \
+           --subscribe notch.watch display_change system_woke \
+           --set notch.watch drawing=off updates=on \
+                 script="$NOTCH detect; $NOTCH fit"
+
 # ================================ Inicio ================================
 rm -f "${TMPDIR:-/tmp}/sketchybar_menus_on"
+$NOTCH detect
 sketchybar --update
 sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$(aerospace list-workspaces --focused)"

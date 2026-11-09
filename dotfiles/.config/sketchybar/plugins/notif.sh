@@ -7,6 +7,7 @@ COUNT=$(lsappinfo info -only StatusLabel "$1" 2>/dev/null | sed -n 's/.*"label"=
 if [ -n "$COUNT" ]; then
   hover "$1 · $COUNT"
   sketchybar --set "$NAME" drawing=on "${HOVER_ARGS[@]}"
+  python3 "$CONFIG_DIR/helpers/notch.py" fit &
 else
   sketchybar --set "$NAME" drawing=off
 fi

@@ -32,3 +32,6 @@ for sid in $(aerospace list-workspaces --all); do
 done
 
 sketchybar --animate tanh 12 "${args[@]}"
+
+# En la pantalla con notch, compactar si invade la cámara
+python3 "$CONFIG_DIR/helpers/notch.py" fit &

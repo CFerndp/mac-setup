@@ -53,6 +53,10 @@ Se habla en español, también en commits, comentarios y README.
   y ciérralo en el script (o usa `plugins/popup.sh` si solo abre/cierra).
 - `updates=when_shown` por defecto: un item que empieza oculto y debe mostrarse solo
   necesita `updates=on`.
+- Notch: lo que crezca hacia el centro debe llamar a `python3 "$CONFIG_DIR/helpers/notch.py" fit &`
+  al final de su script. Las posiciones de `bounding_rects` son coordenadas globales
+  (el monitor externo está a la izquierda, con x negativas), y `notch.py` guarda los
+  límites del notch en esas mismas coordenadas.
 - Regex de items: SketchyBar no acepta `+`; usa `'/menu\..*/'`. Ojo con `'/space\..*/'`,
   que también coge `spaces.observer` y las islas `spaces.m*`.
 - Los scripts corren desde un servicio de launchd sin el PATH de Homebrew: exporta

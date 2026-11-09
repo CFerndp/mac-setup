@@ -18,4 +18,5 @@ APP=$(cat "$APP_FILE" 2>/dev/null)
 __icon_map "$APP"
 
 hover "$APP"
-sketchybar --animate tanh 10 --set "$NAME" icon="$icon_result" "${HOVER_ARGS[@]}"
+sketchybar --set "$NAME" icon="$icon_result" "${HOVER_ARGS[@]}"
+python3 "$CONFIG_DIR/helpers/notch.py" fit &

@@ -124,6 +124,14 @@ música · herramientas · entrada/salida · sistema · fecha.
 - Los menús de la app usan `helpers/menus` (`menus.swift`): `menus list` y
   `menus select <n>`. Idea de FelixKratz reescrita en Swift con APIs públicas. Necesita
   permiso de Accesibilidad para SketchyBar.
+- **Notch (cámara del portátil):** `helpers/notch.py` detecta la pantalla con notch
+  (`detect`) y, cuando algo crece hacia la cámara, lo recorta (`fit`):
+  - menús de la app que no caben → botón **»** con un desplegable con el resto;
+  - escritorios → pierden los iconos de apps (primero los no activos) y queda el número;
+  - título de la música → se acorta.
+
+  Se ejecuta tras cada cambio de escritorio, app, música o avisos, y al conectar o
+  desconectar pantallas. En pantallas sin notch no hace nada.
 - `updates=when_shown` por defecto: los scripts no corren si su item no se ve. Los
   items que empiezan ocultos y se muestran solos (avisos, Docker, música) llevan
   `updates=on`.

@@ -68,3 +68,4 @@ sketchybar --animate tanh 10 --set "$NAME" drawing=on icon="$icon" icon.color=$c
            --set media.title label="$title" \
            --set media.source icon="$icon" label="$source · ${browser% Browser} · $status" \
            --set media.play icon="$play_icon" label="$play_label"
+python3 "$CONFIG_DIR/helpers/notch.py" fit &
