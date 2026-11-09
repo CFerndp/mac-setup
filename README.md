@@ -50,7 +50,7 @@ Brewfile             → everything installed with Homebrew
 
 ## Installed with Homebrew (`setup.sh`)
 
-- **Apps:** Maccy, Shottr, AeroSpace, DBeaver, Postman, Ice, BetterDisplay, AppCleaner,
+- **Apps:** Maccy, Shottr, AeroSpace, DBeaver, Ice, BetterDisplay, AppCleaner,
   Keka, Karabiner-Elements
 - **CLI:** btop, duti, fastfetch, SwitchAudioSource (`switchaudio-osx`, for the bar's audio menu)
 - **Look:** SketchyBar and JankyBorders (`borders`), from the `felixkratz/formulae` tap

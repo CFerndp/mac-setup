@@ -23,7 +23,6 @@ brew install --cask \
   font-jetbrains-mono-nerd-font \
   font-sketchybar-app-font \
   dbeaver-community \
-  postman \
   jordanbaird-ice \
   betterdisplay \
   appcleaner \
