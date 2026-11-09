@@ -23,6 +23,10 @@ after installing something: `brew bundle dump --file Brewfile --force --no-vscod
 file is kept as `.bak-<date>`) and compiles the SketchyBar helpers. Because they are
 symlinks, editing a config in `~` edits the repo: just commit.
 
+If something stops working (for example after a macOS update), run `./doctor.sh`: it
+checks apps and services, symlinks, compiled helpers and settings, and tells you how to
+fix each problem. It only reads, never changes anything.
+
 Files that are not in the repo because they hold other personal settings (`~/.zshrc`,
 Zed and VS Code settings) are applied by hand from `snippets/`.
 
@@ -45,6 +49,7 @@ dotfiles/            → symlinked into ~ (same path)
 snippets/            → snippets to paste into ~/.zshrc, Zed and VS Code
 setup.sh             → full install
 link.sh              → symlinks and helpers only
+doctor.sh            → checks that everything is running
 Brewfile             → everything installed with Homebrew
 ```
 
@@ -242,6 +247,7 @@ music · tools · input/output · system · date.
   | SUPER + Shift + G | lazygit in WezTerm |
   | SUPER + Space | App launcher |
   | SUPER + Shift + Space | Bar: toggle workspaces / app menus |
+  | SUPER + Escape | Lock the screen (presses macOS's Ctrl+Cmd+Q) |
   | SUPER + C | Area screenshot (Shottr) |
   | SUPER + W / Q | Close window |
   | SUPER + arrows | Move focus |

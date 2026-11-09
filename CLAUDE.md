@@ -12,6 +12,8 @@ al actualizarlo, escríbelo en inglés.
   Edita aquí, no copies archivos a `~`.
 - `link.sh` enlaza y compila los helpers (Swift y AppleScript). Ejecútalo tras añadir
   un archivo nuevo que deba enlazarse (y añádelo a la lista de `link` del script).
+- `doctor.sh` comprueba que todo está en marcha. Si añades una app, servicio o helper
+  nuevo, añade también su comprobación ahí.
 - `setup.sh` es la instalación completa en un Mac nuevo. Si instalas algo con
   Homebrew, añádelo aquí también.
 - `snippets/` guarda lo que vive en archivos personales que no están en el repo

@@ -67,6 +67,9 @@ gaps.outer.right = 10
     ctrl-alt-cmd-shift-t = 'exec-and-forget /Applications/WezTerm.app/Contents/MacOS/wezterm start -- /opt/homebrew/bin/btop'
     ctrl-alt-cmd-shift-g = 'exec-and-forget /Applications/WezTerm.app/Contents/MacOS/wezterm start -- /opt/homebrew/bin/lazygit'
     ctrl-alt-cmd-space = 'exec-and-forget open -b com.apple.apps.launcher'
+    # Bloquear la pantalla: pulsa Ctrl+Cmd+Q, el atajo de bloqueo de macOS (en Omarchy es
+    # SUPER+Ctrl+L, pero aquí SUPER+Ctrl no se distingue de SUPER)
+    ctrl-alt-cmd-esc = 'exec-and-forget ~/.config/sketchybar/helpers/hotkey 12 ctrl,cmd'
     # Barra: alternar entre escritorios y menús de la app activa
     ctrl-alt-cmd-shift-space = 'exec-and-forget ~/.config/sketchybar/plugins/menus.sh toggle'
     ctrl-alt-cmd-c = 'exec-and-forget open shottr://grab/area'
