@@ -68,6 +68,14 @@ Se habla en español, también en commits, comentarios y README.
 - No pruebes botones con efectos (play de música, cambiar dispositivo de audio…) sin
   avisar: afectan al usuario en directo. Si cambias algo para probar, déjalo como estaba.
 
+## Fondo animado
+
+- `neon-wallpaper/index.html` se pinta en canvas: vigila el consumo (mide con
+  `ps -axo %cpu,comm | grep WebKit`). Nada de `shadowBlur` por fotograma ni
+  redibujar la pantalla entera si no hace falta.
+- El arranque automático (LaunchAgent) lo activa el usuario con `wallpaper.sh on`;
+  crear agentes de arranque está bloqueado para Claude.
+
 ## Tema Neon Noir
 
 Paleta en `dotfiles/.config/sketchybar/colors.sh` (y repetida en WezTerm, bordes,

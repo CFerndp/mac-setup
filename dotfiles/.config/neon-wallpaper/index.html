@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Neon Noir</title>
+<!--
+  Fondo animado Neon Noir. Lo muestra helpers/wallpaper (una ventana al nivel del
+  escritorio). Modos, con ?mode=…:
+    city     ciudad nocturna con sol synthwave y suelo de neón en movimiento
+    minimal  fondo casi negro con retícula tenue, barrido lento y un cursor de terminal
+  Pensado para gastar poco: resolución normal (no Retina), pocos fps, capas fijas
+  pre-renderizadas, solo se redibuja lo que se mueve y se pausa si no se ve.
+-->
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0b0b12; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #scan { position: fixed; inset: 0; pointer-events: none;
+          background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.18) 0 1px, transparent 1px 3px); }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="scan"></div>
+<script>
+const C = {
+  bg: "#0b0b12", surface: "#1f1f2e", muted: "#6c6c8a", text: "#d7d7e8",
+  magenta: "#ff2a6d", cyan: "#05d9e8", violet: "#b967ff",
+};
+const params = new URLSearchParams(location.search);
+const MODE = params.get("mode") || "city";
+const FPS = MODE === "minimal" ? 12 : 24;
+
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+let W, H, DPR, horizon, staticLayer, windows = [], t0 = performance.now(), fullRedraw = true;
+
+// Aleatorio con semilla: la ciudad sale igual en cada arranque
+let seed = 7;
+const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+
+function layer(w, h) {
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  return [c, c.getContext("2d")];
+}
+
+function resize() {
+  DPR = 1;  // un fondo no necesita Retina; así se pinta 4 veces menos
+  W = Math.floor(innerWidth * DPR);
+  H = Math.floor(innerHeight * DPR);
+  canvas.width = W; canvas.height = H;
+  horizon = Math.floor(H * 0.62);
+  seed = 7;
+  MODE === "minimal" ? buildMinimal() : buildCity();
+  fullRedraw = true;
+}
+
+// ---------------------------------------------------------------- ciudad
+function buildCity() {
+  const [c, g] = layer(W, H);
+
+  // Cielo: casi negro arriba, violeta junto al horizonte
+  const sky = g.createLinearGradient(0, 0, 0, horizon);
+  sky.addColorStop(0, "#07070c");
+  sky.addColorStop(0.65, "#140b24");
+  sky.addColorStop(1, "#3a1240");
+  g.fillStyle = sky;
+  g.fillRect(0, 0, W, horizon);
+
+  // Estrellas tenues
+  for (let i = 0; i < 160; i++) {
+    g.fillStyle = `rgba(215,215,232,${0.15 + rand() * 0.4})`;
+    g.fillRect(rand() * W, rand() * horizon * 0.7, DPR, DPR);
+  }
+
+  // Sol synthwave con franjas
+  const r = Math.min(W, H) * 0.2, cx = W * 0.5, cy = horizon - r * 0.15;
+  const sun = g.createLinearGradient(0, cy - r, 0, cy + r);
+  sun.addColorStop(0, "#ffd36e");
+  sun.addColorStop(0.45, C.magenta);
+  sun.addColorStop(1, C.violet);
+  g.save();
+  g.shadowColor = C.magenta; g.shadowBlur = 60 * DPR;
+  g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fillStyle = sun; g.fill();
+  g.restore();
+  g.fillStyle = "#140b24";
+  for (let i = 0; i < 7; i++) {
+    const y = cy + r * (0.05 + i * 0.13), h = r * (0.02 + i * 0.012);
+    g.fillRect(cx - r, y, r * 2, h);
+  }
+
+  // Dos capas de edificios
+  windows = [];
+  skyline(g, "#1a0f2e", 0.18, 0.42, false);
+  skyline(g, "#08070d", 0.10, 0.30, true);
+
+  // Suelo bajo el horizonte
+  const floor = g.createLinearGradient(0, horizon, 0, H);
+  floor.addColorStop(0, "#1a0b26");
+  floor.addColorStop(1, C.bg);
+  g.fillStyle = floor;
+  g.fillRect(0, horizon, W, H - horizon);
+
+  // Bruma en el horizonte
+  const haze = g.createLinearGradient(0, horizon - H * 0.08, 0, horizon + H * 0.04);
+  haze.addColorStop(0, "rgba(185,103,255,0)");
+  haze.addColorStop(0.7, "rgba(185,103,255,0.18)");
+  haze.addColorStop(1, "rgba(255,42,109,0)");
+  g.fillStyle = haze;
+  g.fillRect(0, horizon - H * 0.08, W, H * 0.12);
+
+  staticLayer = c;
+}
+
+function skyline(g, color, minH, maxH, front) {
+  let x = -10 * DPR;
+  while (x < W) {
+    const w = (24 + rand() * 70) * DPR;
+    const h = H * (minH + rand() * (maxH - minH)) * (Math.abs(x / W - 0.5) < 0.15 ? 0.7 : 1);
+    const top = horizon - h;
+    g.fillStyle = color;
+    g.fillRect(x, top, w, h);
+    if (front && rand() < 0.25) g.fillRect(x + w * 0.45, top - 18 * DPR, 2 * DPR, 18 * DPR);
+    // Ventanas: unas fijas y otras que parpadean
+    const step = 7 * DPR;
+    for (let wy = top + step; wy < horizon - step; wy += step) {
+      for (let wx = x + 4 * DPR; wx < x + w - 4 * DPR; wx += step) {
+        const p = rand();
+        if (p < (front ? 0.06 : 0.035)) {
+          const col = rand() < 0.6 ? C.cyan : C.magenta;
+          const win = { x: wx, y: wy, s: 2.5 * DPR, col, a: 0.35 + rand() * 0.55,
+                        blink: rand() < 0.12, phase: rand() * 10 };
+          if (win.blink) windows.push(win);
+          else { g.globalAlpha = win.a; g.fillStyle = col; g.fillRect(wx, wy, win.s, win.s); g.globalAlpha = 1; }
+        }
+      }
+    }
+    x += w + (front ? 2 : 6) * DPR;
+  }
+}
+
+function drawCity(t) {
+  if (fullRedraw) ctx.drawImage(staticLayer, 0, 0);
+  else ctx.drawImage(staticLayer, 0, horizon, W, H - horizon, 0, horizon, W, H - horizon);
+
+  // Ventanas que parpadean: se repinta solo su cuadradito
+  for (const w of windows) {
+    ctx.drawImage(staticLayer, w.x, w.y, w.s, w.s, w.x, w.y, w.s, w.s);
+    if (Math.sin(t * 0.0012 + w.phase * 3) <= 0.2) continue;
+    ctx.globalAlpha = w.a; ctx.fillStyle = w.col; ctx.fillRect(w.x, w.y, w.s, w.s);
+  }
+  ctx.globalAlpha = 1;
+
+  // Suelo de neón: líneas hacia el punto de fuga y líneas horizontales que avanzan
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0, horizon, W, H - horizon); ctx.clip();
+  const vx = W / 2, depth = H - horizon, speed = (t * 0.00025) % 1;
+  // Resplandor barato: un trazo ancho y tenue debajo de uno fino (sin shadowBlur)
+  for (const [width, alpha] of [[5, 0.12], [1.2, 1]]) {
+    ctx.strokeStyle = C.magenta; ctx.lineWidth = width;
+    ctx.globalAlpha = 0.55 * alpha;
+    ctx.beginPath();
+    for (let i = -24; i <= 24; i++) { ctx.moveTo(vx + i * W * 0.004, horizon); ctx.lineTo(vx + i * W * 0.09, H); }
+    ctx.stroke();
+    for (let i = 0; i < 14; i++) {
+      const z = (i + speed) / 14;              // 0 = horizonte, 1 = primer plano
+      const y = horizon + depth * z * z;
+      ctx.globalAlpha = (0.15 + 0.6 * z) * alpha;
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+// --------------------------------------------------------------- minimal
+function buildMinimal() {
+  const [c, g] = layer(W, H);
+  g.fillStyle = C.bg; g.fillRect(0, 0, W, H);
+
+  // Resplandor violeta muy suave en una esquina
+  const glow = g.createRadialGradient(W * 0.85, H * 0.15, 0, W * 0.85, H * 0.15, W * 0.6);
+  glow.addColorStop(0, "rgba(185,103,255,0.10)");
+  glow.addColorStop(1, "rgba(185,103,255,0)");
+  g.fillStyle = glow; g.fillRect(0, 0, W, H);
+
+  // Retícula tenue
+  g.strokeStyle = "rgba(108,108,138,0.08)"; g.lineWidth = 1;
+  const step = 48 * DPR;
+  for (let x = 0; x < W; x += step) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); }
+  for (let y = 0; y < H; y += step) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+
+  // Texto de esquina con efecto de canales separados
+  const fs = 13 * DPR, x0 = 40 * DPR, y0 = H - 48 * DPR;
+  g.font = `600 ${fs}px "JetBrainsMono Nerd Font", "SF Mono", monospace`;
+  const lines = ["// NEON NOIR", "sys.status ........ online", "uplink ............ secure"];
+  lines.forEach((l, i) => {
+    const y = y0 - (lines.length - 1 - i) * fs * 1.6;
+    g.fillStyle = "rgba(255,42,109,0.55)"; g.fillText(l, x0 - 1.5 * DPR, y);
+    g.fillStyle = "rgba(5,217,232,0.55)"; g.fillText(l, x0 + 1.5 * DPR, y);
+    g.fillStyle = i === 0 ? C.text : C.muted; g.fillText(l, x0, y);
+  });
+  staticLayer = c;
+}
+
+let lastSweep = null;
+function drawMinimal(t) {
+  const y = ((t * 0.00004) % 1) * H;
+  const band = 124 * DPR;
+  if (fullRedraw) ctx.drawImage(staticLayer, 0, 0);
+  else {
+    if (lastSweep !== null) {
+      const top = Math.max(0, lastSweep - band);
+      ctx.drawImage(staticLayer, 0, top, W, band + 4, 0, top, W, band + 4);
+    }
+    const cy = H - 48 * DPR, fs = 13 * DPR;
+    ctx.drawImage(staticLayer, 40 * DPR, cy, fs, fs, 40 * DPR, cy, fs, fs);
+  }
+  lastSweep = y;
+
+  // Barrido lento de arriba abajo
+  const sweep = ctx.createLinearGradient(0, y - 120 * DPR, 0, y);
+  sweep.addColorStop(0, "rgba(5,217,232,0)");
+  sweep.addColorStop(1, "rgba(5,217,232,0.06)");
+  ctx.fillStyle = sweep; ctx.fillRect(0, y - 120 * DPR, W, 120 * DPR);
+  ctx.fillStyle = "rgba(5,217,232,0.25)"; ctx.fillRect(0, y, W, DPR);
+
+  // Cursor de terminal parpadeando tras el texto
+  if (Math.floor(t / 600) % 2 === 0) {
+    const fs = 13 * DPR;
+    ctx.fillStyle = C.magenta;
+    ctx.fillRect(40 * DPR, H - 48 * DPR + fs * 0.6, fs * 0.6, 2 * DPR);
+  }
+}
+
+// ------------------------------------------------------------ comunes
+// Glitch: de vez en cuando una franja se desplaza unos píxeles
+let glitchUntil = 0, nextGlitch = 4000;
+function glitch(t) {
+  if (t > nextGlitch) { glitchUntil = t + 120 + Math.random() * 160; nextGlitch = t + 6000 + Math.random() * 9000; }
+  if (t > glitchUntil) return false;
+  for (let i = 0; i < 3; i++) {
+    const y = Math.random() * H, h = (4 + Math.random() * 24) * DPR, dx = (Math.random() - 0.5) * 40 * DPR;
+    ctx.drawImage(canvas, 0, y, W, h, dx, y, W, h);
+    ctx.fillStyle = Math.random() < 0.5 ? "rgba(255,42,109,0.08)" : "rgba(5,217,232,0.08)";
+    ctx.fillRect(0, y, W, h);
+  }
+  return true;
+}
+
+let last = 0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (document.hidden || now - last < 1000 / FPS) return;
+  last = now;
+  const t = now - t0;
+  MODE === "minimal" ? drawMinimal(t) : drawCity(t);
+  // Tras un glitch toca repintar entero para borrar las franjas desplazadas
+  fullRedraw = glitch(t);
+}
+
+addEventListener("resize", resize);
+resize();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

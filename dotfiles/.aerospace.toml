@@ -66,6 +66,8 @@ gaps.outer.right = 10
     ctrl-alt-cmd-shift-n = 'exec-and-forget open -a Zed'
     ctrl-alt-cmd-shift-t = 'exec-and-forget /Applications/WezTerm.app/Contents/MacOS/wezterm start -- /opt/homebrew/bin/btop'
     ctrl-alt-cmd-space = 'exec-and-forget open -b com.apple.apps.launcher'
+    # Barra: alternar entre escritorios y menús de la app activa
+    ctrl-alt-cmd-shift-space = 'exec-and-forget ~/.config/sketchybar/plugins/menus.sh toggle'
     ctrl-alt-cmd-c = 'exec-and-forget open shottr://grab/area'
 
     # --- Ventanas ---

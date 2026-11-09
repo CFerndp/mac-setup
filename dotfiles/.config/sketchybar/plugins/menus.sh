@@ -4,6 +4,9 @@
 # En la pantalla con notch, los que no caben pasan al botón » (helpers/notch.py).
 #   menus.sh toggle   -> alterna escritorios / menús
 #   menus.sh refresh  -> si los menús están a la vista, recarga los de la app activa
+# También se lanza desde AeroSpace (SUPER+Shift+Espacio), sin el entorno de SketchyBar
+export PATH="/opt/homebrew/bin:$PATH"
+CONFIG_DIR="${CONFIG_DIR:-$HOME/.config/sketchybar}"
 HELPER="$CONFIG_DIR/helpers/menus"
 STATE="${TMPDIR:-/tmp}/sketchybar_menus_on"
 MAX=15

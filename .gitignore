@@ -9,3 +9,4 @@ dotfiles/.config/sketchybar/helpers/*.scpt
 # Lo que Karabiner genera solo
 dotfiles/.config/karabiner/assets/
 dotfiles/.config/karabiner/automatic_backups/
+dotfiles/.config/neon-wallpaper/wallpaper

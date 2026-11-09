@@ -29,6 +29,7 @@ link .config/borders
 link .config/aerospace
 link .config/karabiner
 link .config/fastfetch
+link .config/neon-wallpaper
 link .config/zed/themes/neon-noir.json
 
 echo "==> Helpers de SketchyBar"

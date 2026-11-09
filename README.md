@@ -33,6 +33,7 @@ dotfiles/            → se enlaza en ~ (misma ruta)
   .config/borders/      bordes de ventana
   .config/karabiner/    Caps Lock = SUPER
   .config/fastfetch/
+  .config/neon-wallpaper/  fondo animado (index.html + helper wallpaper.swift)
   .config/zed/themes/neon-noir.json
 snippets/            → trozos para pegar en ~/.zshrc, Zed y VS Code
 setup.sh             → instalación completa
@@ -166,6 +167,28 @@ música · herramientas · entrada/salida · sistema · fecha.
   "Ocultar y mostrar automáticamente la barra de menús" → Nunca, y
   `brew services stop sketchybar`.
 
+## Fondo animado
+
+`dotfiles/.config/neon-wallpaper/`:
+
+- `index.html`: animación Neon Noir en canvas. Modos con `?mode=`:
+  - `city`: ciudad nocturna con sol synthwave y suelo de neón en movimiento (monitor externo);
+  - `minimal`: casi negro con retícula tenue, barrido lento y cursor de terminal (portátil).
+- `wallpaper.swift`: helper propio que pone esa página en una ventana al nivel del
+  escritorio de cada pantalla (debajo de los iconos y de todo). Hace lo que Plash, que
+  ya no es open source. Se rehace solo al conectar o quitar pantallas. AeroSpace no lo
+  gestiona. Opciones: `--external <modo>` y `--builtin <modo>`.
+- `wallpaper.sh on` lo compila y lo deja arrancando al iniciar sesión (LaunchAgent
+  `com.cferndp.neon-wallpaper`); `wallpaper.sh off` lo quita. **Hay que ejecutarlo a
+  mano** (no lo hace `setup.sh`):
+
+  ```bash
+  ~/.config/neon-wallpaper/wallpaper.sh on
+  ```
+
+- Consumo: resolución normal (no Retina), 24 fps en `city` y 12 en `minimal`, solo se
+  redibuja lo que se mueve. Unos 20 % de un núcleo en total con las dos pantallas.
+
 ## AeroSpace
 
 - **SUPER = Caps Lock.**
@@ -180,6 +203,7 @@ música · herramientas · entrada/salida · sistema · fecha.
   | SUPER + Shift + B / Enter | Brave |
   | SUPER + Shift + N / F / T | Zed / Finder / btop |
   | SUPER + Espacio | Lanzador de apps |
+  | SUPER + Shift + Espacio | Barra: alternar escritorios / menús de la app |
   | SUPER + C | Captura de área (Shottr) |
   | SUPER + W / Q | Cerrar ventana |
   | SUPER + flechas | Mover el foco |
