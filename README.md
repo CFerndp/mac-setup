@@ -1,11 +1,11 @@
-# Setup del Mac
+# Mac setup
 
-Configuración de mi Mac para desarrollar: tiling con AeroSpace y los atajos de
-Omarchy, Caps Lock como SUPER, barra SketchyBar y el tema propio Neon Noir.
+My Mac development setup: AeroSpace tiling with Omarchy's shortcuts, Caps Lock as
+SUPER, a SketchyBar status bar and a custom theme called Neon Noir.
 
-## Uso
+## Usage
 
-En un Mac nuevo:
+On a new Mac:
 
 ```bash
 git clone git@github.com:CFerndp/mac-setup.git
@@ -13,250 +13,248 @@ cd mac-setup
 ./setup.sh
 ```
 
-`setup.sh` instala todo con Homebrew, aplica los ajustes de macOS y ejecuta `link.sh`.
+`setup.sh` installs everything with Homebrew, applies the macOS settings and runs `link.sh`.
 
-`Brewfile` es la foto exacta de todo lo instalado con Homebrew (sin extensiones de
-VS Code). Para reinstalarlo todo de una vez: `brew bundle --file Brewfile`. Para
-actualizarlo tras instalar algo: `brew bundle dump --file Brewfile --force --no-vscode`.
+`Brewfile` is an exact snapshot of everything installed with Homebrew (without VS Code
+extensions). To reinstall it all at once: `brew bundle --file Brewfile`. To refresh it
+after installing something: `brew bundle dump --file Brewfile --force --no-vscode`.
 
-`link.sh` enlaza cada archivo de `dotfiles/` en su sitio de `~` (si ya existe uno, lo
-guarda como `.bak-<fecha>`) y compila los helpers de SketchyBar. Como son enlaces,
-editar la config en `~` es editar el repo: basta con hacer commit.
+`link.sh` symlinks every file in `dotfiles/` to the same path under `~` (an existing
+file is kept as `.bak-<date>`) and compiles the SketchyBar helpers. Because they are
+symlinks, editing a config in `~` edits the repo: just commit.
 
-Lo que no está en el repo porque son archivos personales con más cosas
-(`~/.zshrc`, ajustes de Zed y VS Code) se aplica a mano desde `snippets/`.
+Files that are not in the repo because they hold other personal settings (`~/.zshrc`,
+Zed and VS Code settings) are applied by hand from `snippets/`.
 
-## Estructura
+## Layout
 
 ```
-dotfiles/            → se enlaza en ~ (misma ruta)
+dotfiles/            → symlinked into ~ (same path)
   .aerospace.toml
   .wezterm.lua
-  .config/sketchybar/   barra: sketchybarrc, colors.sh, plugins/, helpers/
-  .config/aerospace/    scripts de AeroSpace (minimizar / restaurar)
-  .config/borders/      bordes de ventana
+  .config/sketchybar/   bar: sketchybarrc, colors.sh, plugins/, helpers/
+  .config/aerospace/    AeroSpace scripts (minimize / restore)
+  .config/borders/      window borders
   .config/karabiner/    Caps Lock = SUPER
   .config/fastfetch/
-  .config/neon-noir/     tema de la shell (colores de Powerlevel10k y fzf)
-  .config/btop/themes/   tema de btop
-  Library/Application Support/lazygit/config.yml   tema de lazygit
-  .config/neon-wallpaper/  fondo animado (index.html + helper wallpaper.swift)
+  .config/neon-noir/     shell theme (Powerlevel10k and fzf colors)
+  .config/btop/themes/   btop theme
+  Library/Application Support/lazygit/config.yml   lazygit theme
+  .config/neon-wallpaper/  animated wallpaper (index.html + wallpaper.swift helper)
   .config/zed/themes/neon-noir.json
-snippets/            → trozos para pegar en ~/.zshrc, Zed y VS Code
-setup.sh             → instalación completa
-link.sh              → solo los enlaces y los helpers
-Brewfile             → todo lo instalado con Homebrew
+snippets/            → snippets to paste into ~/.zshrc, Zed and VS Code
+setup.sh             → full install
+link.sh              → symlinks and helpers only
+Brewfile             → everything installed with Homebrew
 ```
 
-## Instalado con Homebrew (`setup.sh`)
+## Installed with Homebrew (`setup.sh`)
 
 - **Apps:** Maccy, Shottr, AeroSpace, DBeaver, Postman, Ice, Stats,
   BetterDisplay, MonitorControl, AppCleaner, Keka, Karabiner-Elements
-- **CLI:** btop, duti, fastfetch, SwitchAudioSource (`switchaudio-osx`, para el menú de audio de la barra)
-- **Estética:** SketchyBar y JankyBorders (`borders`), del tap `felixkratz/formulae`
-  (solo esas dos fórmulas marcadas como de confianza con `brew trust`). Se
-  compilan en el Mac: necesitan Command Line Tools al día.
-- **Fuentes:** JetBrains Mono Nerd Font, sketchybar-app-font
-- Descartados: Rectangle (choca con AeroSpace), Starship (se mantiene Powerlevel10k)
+- **CLI:** btop, duti, fastfetch, SwitchAudioSource (`switchaudio-osx`, for the bar's audio menu)
+- **Look:** SketchyBar and JankyBorders (`borders`), from the `felixkratz/formulae` tap
+  (only those two formulae are trusted, with `brew trust`). They are built on the Mac,
+  so they need up-to-date Command Line Tools.
+- **Fonts:** JetBrains Mono Nerd Font, sketchybar-app-font
+- Dropped: Rectangle (clashes with AeroSpace), Starship (Powerlevel10k stays)
 
-## Archivos de configuración
+## Config files
 
-| Archivo | Qué hace |
+| File | What it does |
 |---|---|
-| `~/.aerospace.toml` | AeroSpace con los atajos de Omarchy |
-| `~/.config/aerospace/minimize.sh` | Minimizar y restaurar ventanas (SUPER+M / SUPER+Shift+M); recuerda el orden en que se minimizaron |
-| `~/.config/karabiner/karabiner.json` | Caps Lock = SUPER (ctrl+opt+cmd); un toque rápido = Bloq Mayús |
-| `~/.wezterm.lua` | WezTerm: JetBrainsMono Nerd Font 14 pt, paleta Neon Noir, 85 % de opacidad con desenfoque, sin barra de título |
-| `~/.config/sketchybar/` | Barra superior flotante y redondeada (ver abajo). Colores en `colors.sh`, scripts en `plugins/`, iconos de apps en `plugins/icon_map.sh` (de sketchybar-app-font v3.0.21) |
-| `~/.config/borders/bordersrc` | Borde con degradado magenta→cian en la ventana activa |
-| `~/.config/zed/themes/neon-noir.json` | Tema Neon Noir para Zed (se activa con `snippets/zed-settings.jsonc`) |
-| `~/.config/fastfetch/config.jsonc` | fastfetch con el logo de Apple en degradado neón |
-| `~/.config/neon-noir/theme.zsh` | Colores Neon Noir para el prompt de Powerlevel10k (solo colores, el estilo no cambia) y para fzf |
-| `~/.config/btop/themes/neon-noir.theme` | Tema de btop (`link.sh` pone `color_theme = "neon-noir"` en `btop.conf`) |
-| `~/Library/Application Support/lazygit/config.yml` | lazygit con bordes redondeados y colores Neon Noir |
-| `~/.zshrc` (fuera del repo) | Oh My Zsh + Powerlevel10k. Primera línea: fastfetch, solo en WezTerm; tras `~/.p10k.zsh`: el tema Neon Noir (`snippets/zshrc.sh`) |
-| VS Code `settings.json` (fuera del repo) | Terminal externa = WezTerm y colores Neon Noir sobre "Default Dark Modern" (`snippets/vscode-neon-noir.jsonc`) |
+| `~/.aerospace.toml` | AeroSpace with Omarchy's shortcuts |
+| `~/.config/aerospace/minimize.sh` | Minimize and restore windows (SUPER+M / SUPER+Shift+M); remembers the order they were minimized in |
+| `~/.config/karabiner/karabiner.json` | Caps Lock = SUPER (ctrl+opt+cmd); a quick tap = Caps Lock |
+| `~/.wezterm.lua` | WezTerm: JetBrainsMono Nerd Font 14 pt, Neon Noir palette, 85 % opacity with blur, no title bar |
+| `~/.config/sketchybar/` | Floating, rounded top bar (see below). Colors in `colors.sh`, scripts in `plugins/`, app icons in `plugins/icon_map.sh` (from sketchybar-app-font v3.0.21) |
+| `~/.config/borders/bordersrc` | Magenta→cyan gradient border on the active window |
+| `~/.config/zed/themes/neon-noir.json` | Neon Noir theme for Zed (enabled with `snippets/zed-settings.jsonc`) |
+| `~/.config/fastfetch/config.jsonc` | fastfetch with the Apple logo in a neon gradient |
+| `~/.config/neon-noir/theme.zsh` | Neon Noir colors for the Powerlevel10k prompt (colors only, the style is unchanged) and for fzf |
+| `~/.config/btop/themes/neon-noir.theme` | btop theme (`link.sh` sets `color_theme = "neon-noir"` in `btop.conf`) |
+| `~/Library/Application Support/lazygit/config.yml` | lazygit with rounded borders and Neon Noir colors |
+| `~/.zshrc` (not in the repo) | Oh My Zsh + Powerlevel10k. First line: fastfetch, in WezTerm only; after `~/.p10k.zsh`: the Neon Noir theme (`snippets/zshrc.sh`) |
+| VS Code `settings.json` (not in the repo) | External terminal = WezTerm and Neon Noir colors on top of "Default Dark Modern" (`snippets/vscode-neon-noir.jsonc`) |
 
-## Ajustes del sistema
+## System settings
 
-- WezTerm abre los scripts (`.sh`, `.command`, `.tool`, `.zsh`, `.bash`) y los enlaces `ssh://`, `telnet://` y `man` (con `duti`)
-- Repetición de teclas rápida, sin popup de acentos al mantener una tecla
-- Finder muestra archivos ocultos y extensiones
-- Capturas en `~/Screenshots`
-- Barra de menú de macOS oculta (aparece al llevar el ratón arriba); SketchyBar ocupa su lugar
+- WezTerm opens scripts (`.sh`, `.command`, `.tool`, `.zsh`, `.bash`) and `ssh://`, `telnet://` and `man` links (with `duti`)
+- Fast key repeat, no accent popup when holding a key
+- Finder shows hidden files and extensions
+- Screenshots go to `~/Screenshots`
+- macOS menu bar auto-hidden (it shows when the mouse reaches the top); SketchyBar takes its place
 
-## Estética: tema Neon Noir (paleta propia, cyberpunk oscuro)
+## Look: Neon Noir theme (custom palette, dark cyberpunk)
 
-| Color | Hex | Uso |
+| Color | Hex | Used for |
 |---|---|---|
-| Fondo | `#0b0b12` | Fondos |
-| Magenta | `#ff2a6d` | Activo, cursor, palabras clave |
-| Cian | `#05d9e8` | Acentos, funciones |
-| Violeta | `#b967ff` | Tipos, borde de la barra |
-| Verde | `#00ff9f` | Strings |
-| Amarillo | `#f3e600` | Números, avisos |
-| Texto | `#d7d7e8` | Texto |
+| Background | `#0b0b12` | Backgrounds |
+| Magenta | `#ff2a6d` | Active items, cursor, keywords |
+| Cyan | `#05d9e8` | Accents, functions |
+| Violet | `#b967ff` | Types, bar border |
+| Green | `#00ff9f` | Strings |
+| Yellow | `#f3e600` | Numbers, warnings |
+| Text | `#d7d7e8` | Text |
 
-No usa extensiones de terceros: en Zed es un tema propio y en VS Code son ajustes de color.
+No third-party extensions: in Zed it is a custom theme and in VS Code it is color settings.
 
-### Barra (SketchyBar)
+### Bar (SketchyBar)
 
-**Filosofía:** solo iconos. El dato aparece al pasar el ratón (con `plugins/hover.sh`)
-y el clic lleva a más. Los colores avisan sin tener que pasar el ratón. Los menús
-emergentes se cierran solos al sacar el ratón de la barra.
+**Philosophy:** icons only. The data shows on hover (via `plugins/hover.sh`) and a
+click leads to more. Colors warn you without hovering. Popups close by themselves when
+the mouse leaves the bar.
 
-La barra es transparente y los iconos van en **islas** (brackets con fondo propio),
-como en la config de FelixKratz: escritorios (una por pantalla) · app activa |
-música · herramientas · entrada/salida · sistema · fecha.
+The bar is transparent and the icons sit in **islands** (brackets with their own
+background), as in FelixKratz's config: workspaces (one per display) · active app |
+music · tools · input/output · system · date.
 
-- **Izquierda:**
-  - Escritorios de cada pantalla con los iconos de sus apps, animados al cambiar.
-    Los pinta un solo script (`plugins/spaces.sh`, lanzado por el item oculto
-    `spaces.observer`) en vez de uno por escritorio.
-  - App activa: su icono (nombre al pasar el ratón). **Clic: los escritorios se
-    cambian por los menús de la app** (Archivo, Edición…), y otro clic los devuelve.
-    Así no hace falta la barra de macOS.
-- **Derecha:**
+- **Left:**
+  - Each display's workspaces with the icons of their apps, animated on change. A
+    single script paints them all (`plugins/spaces.sh`, run by the hidden
+    `spaces.observer` item) instead of one script per workspace.
+  - Active app: its icon (name on hover). **Click: the workspaces are swapped for the
+    app's menus** (File, Edit…), and another click brings them back. This replaces the
+    macOS menu bar.
+- **Right:**
 
-  | Icono | Al pasar el ratón | Clic | Otros |
+  | Icon | On hover | Click | Other |
   |---|---|---|---|
-  | Música del navegador (magenta = suena, gris = pausa) | Título | Fuente, estado, anterior / play-pausa / siguiente, "Ir a la pestaña" | |
-  | Slack, Teams, Outlook (solo si hay sin leer) | Nº sin leer | Abre la app | |
-  | Capturas | — | Shottr: área, pantalla, ventana, con scroll; grabación de macOS | |
-  | Portapapeles | «Portapapeles» | Abre Maccy (pulsa su atajo, Shift+Cmd+C, con `helpers/hotkey`) | |
-  | Docker (verde = hay contenedores, oculto si Docker no corre) | Nº en marcha | Lista; clic en uno abre sus logs en WezTerm | |
-  | Altavoz y micro | Nombres | Elegir dispositivo | Clic derecho: ajustes de sonido |
-  | Teclado | Distribución (US / ES / ABC) | Cambiar | |
-  | Volumen (el icono indica el nivel) | % | Deslizador, silencio y controles de reproducción | Rueda: subir/bajar. Clic derecho: ajustes de sonido |
-  | Red (Wi-Fi, cable o rojo sin conexión) | Tipo e IP | Ajustes de Wi-Fi / red del sistema | |
-  | CPU (cian / amarillo ≥ 50 % / rojo ≥ 80 %) | % | Monitor de Actividad | |
-  | Batería (verde / amarillo / rojo si está baja) | %, cargando o tiempo restante | — | |
-  | Fecha "L 09/11 10:37" | Fecha completa | — | |
+  | Browser music (magenta = playing, grey = paused) | Title | Source, state, previous / play-pause / next, "Go to tab" | |
+  | Slack, Teams, Outlook (only when there are unread items) | Unread count | Opens the app | |
+  | Screenshots | — | Shottr: area, full screen, window, scrolling; macOS screen recording | |
+  | Clipboard | "Portapapeles" | Opens Maccy (presses its shortcut, Shift+Cmd+C, with `helpers/hotkey`) | |
+  | Docker (green = containers running, hidden if Docker is not running) | Running count | List; clicking one opens its logs in WezTerm | |
+  | Speaker and mic | Names | Pick a device | Right click: Sound settings |
+  | Keyboard | Layout (US / ES / ABC) | Switch | |
+  | Volume (the icon shows the level) | % | Slider, mute and playback controls | Scroll wheel: up/down. Right click: Sound settings |
+  | Network (Wi-Fi, cable, or red when offline) | Type and IP | macOS Wi-Fi / Network settings | |
+  | CPU (cyan / yellow ≥ 50 % / red ≥ 80 %) | % | Activity Monitor | |
+  | Battery (green / yellow / red when low) | %, charging or time left | — | |
+  | Date, Spanish short format "L 09/11 10:37" (weekday initial, day/month, time) | Full date | — | |
 
-  Lo que suena puede salir solo como "YouTube Music" cuando esa web no pone la
-  canción en el título de la pestaña (por ejemplo, en pausa).
-- `topmost=on`: la barra queda por encima de la barra de macOS cuando esta aparece.
-- El botón del portapapeles usa `helpers/hotkey` (`hotkey.swift`): pulsa un atajo a nivel
-  de teclado (`hotkey 8 cmd,shift` = Shift+Cmd+C). Maccy no tiene otra forma de abrirse
-  desde fuera. Si cambias su atajo, cambia `MACCY_KEY` en `sketchybarrc`.
-- Los menús de la app usan `helpers/menus` (`menus.swift`): `menus list` y
-  `menus select <n>`. Idea de FelixKratz reescrita en Swift con APIs públicas. Necesita
-  permiso de Accesibilidad para SketchyBar.
-- **Notch (cámara del portátil):** `helpers/notch.py` detecta la pantalla con notch
-  (`detect`) y, cuando algo crece hacia la cámara, lo recorta (`fit`):
-  - menús de la app que no caben → botón **»** con un desplegable con el resto;
-  - escritorios → pierden los iconos de apps (primero los no activos) y queda el número;
-  - título de la música → se acorta.
+  The music item may show only "YouTube Music" when that site does not put the song in
+  the tab title (for example, while paused).
+- `topmost=on`: the bar stays above the macOS menu bar when the latter shows.
+- The clipboard button uses `helpers/hotkey` (`hotkey.swift`): it presses a shortcut at
+  keyboard level (`hotkey 8 cmd,shift` = Shift+Cmd+C). Maccy has no other way to be
+  opened from outside. If you change its shortcut, change `MACCY_KEY` in `sketchybarrc`.
+- App menus use `helpers/menus` (`menus.swift`): `menus list` and `menus select <n>`.
+  FelixKratz's idea, rewritten in Swift with public APIs. Needs Accessibility
+  permission for SketchyBar.
+- **Notch (laptop camera):** `helpers/notch.py` finds the display with a notch
+  (`detect`) and, when something grows towards the camera, trims it (`fit`):
+  - app menus that don't fit → a **»** button with a dropdown holding the rest;
+  - workspaces → lose their app icons (inactive ones first), leaving the number;
+  - music title → shortened.
 
-  Se ejecuta tras cada cambio de escritorio, app, música o avisos, y al conectar o
-  desconectar pantallas. En pantallas sin notch no hace nada.
-- `updates=when_shown` por defecto: los scripts no corren si su item no se ve. Los
-  items que empiezan ocultos y se muestran solos (avisos, Docker, música) llevan
-  `updates=on`.
-- El selector de teclado usa `helpers/inputsource`, una herramienta propia en Swift
-  (`inputsource.swift`, compilada con `swiftc -O inputsource.swift -o inputsource`).
-  Comandos: `list`, `current`, `select <id>`.
-- Los controles de reproducción usan `helpers/mediakey` (`mediakey.swift`), que pulsa
-  las teclas multimedia del sistema: `mediakey play|next|previous`. La primera vez
-  macOS puede pedir permiso de Accesibilidad para SketchyBar.
-- "Lo que suena" lee el título de las pestañas con `helpers/music_tabs.scpt` y cambia
-  de pestaña con `helpers/focus_tab.scpt` (AppleScript; los `.applescript` son el
-  código fuente, se compilan con `osacompile`). Sabe si suena por la marca
-  "Playing audio" que el navegador pone en `pmset -g assertions`. Solo consulta los
-  navegadores que ya están abiertos. YouTube Music no pone el artista en el título,
-  así que ahí solo sale la canción.
+  It runs after every workspace, app, music or notification change, and when displays
+  are plugged in or out. On displays without a notch it does nothing.
+- `updates=when_shown` by default: scripts don't run while their item is hidden. Items
+  that start hidden and show themselves (notifications, Docker, music) use `updates=on`.
+- The keyboard switcher uses `helpers/inputsource`, a small Swift tool
+  (`inputsource.swift`, built with `swiftc -O inputsource.swift -o inputsource`).
+  Commands: `list`, `current`, `select <id>`.
+- Playback controls use `helpers/mediakey` (`mediakey.swift`), which presses the system
+  media keys: `mediakey play|next|previous`. macOS may ask for Accessibility permission
+  for SketchyBar the first time.
+- "Now playing" reads tab titles with `helpers/music_tabs.scpt` and switches tabs with
+  `helpers/focus_tab.scpt` (AppleScript; the `.applescript` files are the source,
+  compiled with `osacompile`). It knows whether music is playing from the
+  "Playing audio" assertion the browser sets in `pmset -g assertions`. It only queries
+  browsers that are already open. YouTube Music does not put the artist in the title,
+  so only the song shows there.
 
-### Servicios
+### Services
 
-- SketchyBar y JankyBorders arrancan solos con `brew services`. Para reiniciarlos:
+- SketchyBar and JankyBorders start by themselves with `brew services`. To restart them:
 
   ```bash
   brew services restart sketchybar
   brew services restart borders
   ```
 
-- AeroSpace avisa a SketchyBar en cada cambio de escritorio (`exec-on-workspace-change`)
-  y deja 46 px arriba en la pantalla externa para la barra (flota a 6 px y mide 32). En el portátil macOS ya
-  reserva la franja del notch, así que ahí solo hay 10 px.
-- Para volver a la barra de macOS: Ajustes del Sistema → Centro de control →
-  "Ocultar y mostrar automáticamente la barra de menús" → Nunca, y
-  `brew services stop sketchybar`.
+- AeroSpace notifies SketchyBar on every workspace change (`exec-on-workspace-change`)
+  and leaves 46 px at the top of the external display for the bar (it floats 6 px down
+  and is 32 px tall). On the laptop macOS already reserves the notch strip, so there
+  it's only 10 px.
+- To go back to the macOS menu bar: System Settings → Control Center →
+  "Automatically hide and show the menu bar" → Never, and `brew services stop sketchybar`.
 
-## Fondo animado
+## Animated wallpaper
 
 `dotfiles/.config/neon-wallpaper/`:
 
-- `index.html`: animación Neon Noir en canvas. Modos con `?mode=`:
-  - `window` (**monitor externo, por defecto**): la figura de la azotea, sentada en el
-    suelo de un piso oscuro frente a un ventanal que ocupa todo el ancho; fuera, la
-    ciudad desenfocada por la lluvia y, en el cristal, gotas que resbalan a tirones;
-  - `edge` (**portátil, por defecto**): una figura sentada de espaldas al borde de una
-    azotea sobre una ciudad inmensa, con lluvia fina, un rótulo roto «NO EXIT» y algún
-    relámpago violeta;
-  - `freefall`: una figura cae con los brazos abiertos entre muros de rascacielos que
-    suben;
-  - `city`: ciudad nocturna con sol synthwave y suelo de neón en movimiento;
-  - `minimal`: casi negro con retícula tenue, barrido lento y cursor de terminal.
+- `index.html`: Neon Noir canvas animation. Modes via `?mode=`:
+  - `window` (**external display, default**): the rooftop figure, sitting on the floor of
+    a dark flat in front of a window as wide as the screen; outside, the city blurred
+    by the rain and, on the glass, drops that slide down in jerks;
+  - `edge` (**laptop, default**): a figure sitting with their back to you on the edge of
+    a rooftop above a huge city, with light rain, a broken "NO EXIT" neon sign and the
+    odd violet lightning flash;
+  - `freefall`: a figure falling with open arms between rising skyscraper walls;
+  - `city`: night city with a synthwave sun and a moving neon floor;
+  - `minimal`: almost black with a faint grid, a slow scan line and a terminal cursor.
 
-  Para usar otros, cambia los argumentos del helper en el plist
-  (`--external city --builtin minimal`) y vuelve a ejecutar `wallpaper.sh on`.
-- `wallpaper.swift`: helper propio que pone esa página en una ventana al nivel del
-  escritorio de cada pantalla (debajo de los iconos y de todo). Hace lo que Plash, que
-  ya no es open source. Se rehace solo al conectar o quitar pantallas. AeroSpace no lo
-  gestiona. Opciones: `--external <modo>` y `--builtin <modo>`.
-- `wallpaper.sh on` lo compila y lo deja arrancando al iniciar sesión (LaunchAgent
-  `com.cferndp.neon-wallpaper`); `wallpaper.sh off` lo quita. **Hay que ejecutarlo a
-  mano** (no lo hace `setup.sh`):
+  To use other modes, change the helper's arguments in the plist
+  (`--external city --builtin minimal`) and run `wallpaper.sh on` again.
+- `wallpaper.swift`: a small helper that shows that page in a window at desktop level on
+  each display (below the icons and everything else). It does what Plash does, which is
+  no longer open source. It rebuilds itself when displays are plugged in or out.
+  AeroSpace does not manage it. Options: `--external <mode>` and `--builtin <mode>`.
+- `wallpaper.sh on` builds it and makes it start at login (LaunchAgent
+  `com.cferndp.neon-wallpaper`); `wallpaper.sh off` removes it. **Run it by hand**
+  (`setup.sh` doesn't):
 
   ```bash
   ~/.config/neon-wallpaper/wallpaper.sh on
   ```
 
-- **Fondo estático a juego:** `~/.config/neon-wallpaper/wallpaper set-static` saca un
-  fotograma de cada escena a la resolución de cada pantalla (en `static/`, fuera de
-  git) y lo pone como fondo normal de macOS. Es lo que se ve en la pantalla de
-  bloqueo, en Mission Control y mientras el animado está en pausa. Vuelve a lanzarlo
-  si cambias de escena o de monitor.
-- **Batería:** con batería o en modo de bajo consumo, el animado se pausa y se oculta
-  (se ve el estático); al enchufar vuelve solo. Para que siga animado con batería,
-  añade `--keep-on-battery` a los argumentos del plist.
-- Consumo: resolución normal (no Retina), entre 12 y 24 fps según la escena, sin
-  desenfoques por fotograma y solo se redibuja lo que hace falta. Unos 20 % de un núcleo en total con las dos pantallas.
+- **Matching static wallpaper:** `~/.config/neon-wallpaper/wallpaper set-static` renders a
+  frame of each scene at each display's resolution (into `static/`, not in git) and sets
+  it as the regular macOS wallpaper. That's what shows on the lock screen, in Mission
+  Control and while the animation is paused. Run it again after changing scene or display.
+- **Battery:** on battery or in Low Power Mode the animation pauses and hides (the static
+  one shows); it resumes when plugged in. To keep it animated on battery, add
+  `--keep-on-battery` to the plist arguments.
+- Power use: normal resolution (not Retina), 12–24 fps depending on the scene, no
+  per-frame blur and only what changes is redrawn. About 20 % of one core in total with
+  both displays.
 
 ## AeroSpace
 
 - **SUPER = Caps Lock.**
-- **Pantallas:** escritorios 1–5 en la pantalla externa (cualquiera que no sea la del
-  portátil) y 6–10 en el portátil. Si solo está el portátil, van todos ahí. Supone
-  un máximo de dos pantallas.
-- **Atajos:**
+- **Displays:** workspaces 1–5 on the external display (any display that isn't the
+  laptop's) and 6–10 on the laptop. With only the laptop, they all go there. Assumes at
+  most two displays.
+- **Shortcuts** (some keys refer to a Spanish ISO keyboard):
 
-  | Atajo | Acción |
+  | Shortcut | Action |
   |---|---|
   | SUPER + Enter | WezTerm |
   | SUPER + Shift + B / Enter | Brave |
   | SUPER + Shift + N / F / T | Zed / Finder / btop |
-  | SUPER + Espacio | Lanzador de apps |
-  | SUPER + Shift + Espacio | Barra: alternar escritorios / menús de la app |
-  | SUPER + C | Captura de área (Shottr) |
-  | SUPER + W / Q | Cerrar ventana |
-  | SUPER + flechas | Mover el foco |
-  | SUPER + Shift + flechas | Mover la ventana |
-  | SUPER + J | Cambiar la división horizontal/vertical |
-  | SUPER + L | Mosaico / acordeón (si las ventanas no salen lado a lado, es esto) |
-  | SUPER + T | Flotante / mosaico |
-  | SUPER + F | Pantalla completa |
-  | SUPER + M | Minimizar al Dock |
-  | SUPER + Shift + M | Restaurar la última minimizada (si no, las de la app activa) |
-  | SUPER + `'` / `¡` (+ Shift) | Ancho (alto) − / + |
-  | SUPER + 1…0 | Ir al escritorio |
-  | SUPER + Shift + 1…0 | Mover la ventana al escritorio |
-  | SUPER + Tab / Shift + Tab | Escritorio siguiente / anterior |
-  | SUPER + `º` | Último escritorio |
-  | SUPER + Shift + `º` | Pasar el escritorio al otro monitor |
-  | SUPER + Shift + `Ñ` | Modo servicio: `r` reinicia el layout, `Esc` recarga la config |
+  | SUPER + Space | App launcher |
+  | SUPER + Shift + Space | Bar: toggle workspaces / app menus |
+  | SUPER + C | Area screenshot (Shottr) |
+  | SUPER + W / Q | Close window |
+  | SUPER + arrows | Move focus |
+  | SUPER + Shift + arrows | Move window |
+  | SUPER + J | Toggle horizontal/vertical split |
+  | SUPER + L | Tiles / accordion (if windows aren't side by side, this is why) |
+  | SUPER + T | Floating / tiling |
+  | SUPER + F | Full screen |
+  | SUPER + M | Minimize to the Dock |
+  | SUPER + Shift + M | Restore the last minimized window (otherwise, the active app's) |
+  | SUPER + `'` / `¡` (+ Shift) | Width (height) − / + (the two keys right of 0) |
+  | SUPER + 1…0 | Go to workspace |
+  | SUPER + Shift + 1…0 | Move window to workspace |
+  | SUPER + Tab / Shift + Tab | Next / previous workspace |
+  | SUPER + `º` | Last workspace (key left of 1) |
+  | SUPER + Shift + `º` | Move workspace to the other display |
+  | SUPER + Shift + `Ñ` | Service mode: `r` resets the layout, `Esc` reloads the config |
 
-- **Diagnóstico:**
+- **Troubleshooting:**
 
   ```bash
   aerospace list-monitors
@@ -264,8 +262,7 @@ música · herramientas · entrada/salida · sistema · fecha.
   aerospace list-windows --all --format '%{workspace} | %{app-name} | %{window-layout}'
   ```
 
-## Pendiente / ideas
+## To do / ideas
 
-- Asignar cada app a su escritorio (Slack → 4, Brave → 2…)
-- ¿SUPER + Shift + B debería abrir Chrome en vez de Brave?
-- Probar la asignación de pantallas con el monitor de la oficina
+- Assign each app to its workspace (Slack → 4, Brave → 2…)
+- Test the display assignment with the office monitor

@@ -2,7 +2,8 @@
 
 Repo con la configuración del Mac de trabajo de Cristian: AeroSpace con los atajos
 de Omarchy, Caps Lock como SUPER, barra SketchyBar y el tema propio Neon Noir.
-Se habla en español, también en commits, comentarios y README.
+Se habla en español, también en commits y comentarios. El README está en inglés:
+al actualizarlo, escríbelo en inglés.
 
 ## Cómo está montado
 
