@@ -123,6 +123,7 @@ música · herramientas · entrada/salida · sistema · fecha.
   | Música del navegador (magenta = suena, gris = pausa) | Título | Fuente, estado, anterior / play-pausa / siguiente, "Ir a la pestaña" | |
   | Slack, Teams, Outlook (solo si hay sin leer) | Nº sin leer | Abre la app | |
   | Capturas | — | Shottr: área, pantalla, ventana, con scroll; grabación de macOS | |
+  | Portapapeles | «Portapapeles» | Abre Maccy (pulsa su atajo, Shift+Cmd+C, con `helpers/hotkey`) | |
   | Docker (verde = hay contenedores, oculto si Docker no corre) | Nº en marcha | Lista; clic en uno abre sus logs en WezTerm | |
   | Altavoz y micro | Nombres | Elegir dispositivo | Clic derecho: ajustes de sonido |
   | Teclado | Distribución (US / ES / ABC) | Cambiar | |
@@ -135,6 +136,9 @@ música · herramientas · entrada/salida · sistema · fecha.
   Lo que suena puede salir solo como "YouTube Music" cuando esa web no pone la
   canción en el título de la pestaña (por ejemplo, en pausa).
 - `topmost=on`: la barra queda por encima de la barra de macOS cuando esta aparece.
+- El botón del portapapeles usa `helpers/hotkey` (`hotkey.swift`): pulsa un atajo a nivel
+  de teclado (`hotkey 8 cmd,shift` = Shift+Cmd+C). Maccy no tiene otra forma de abrirse
+  desde fuera. Si cambias su atajo, cambia `MACCY_KEY` en `sketchybarrc`.
 - Los menús de la app usan `helpers/menus` (`menus.swift`): `menus list` y
   `menus select <n>`. Idea de FelixKratz reescrita en Swift con APIs públicas. Necesita
   permiso de Accesibilidad para SketchyBar.

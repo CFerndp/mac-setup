@@ -171,6 +171,15 @@ for entry in "󰩭|Área|open shottr://grab/area" \
                    click_script="sketchybar --set capture popup.drawing=off; sleep 0.2; $cmd"
 done
 
+# Portapapeles: abre Maccy pulsando su atajo global (Shift+Cmd+C; Maccy no tiene
+# otra forma de abrirse desde fuera). Si cambias el atajo en Maccy, cambia MACCY_KEY.
+MACCY_KEY="8 cmd,shift"
+sketchybar --add item clipboard right \
+           --subscribe clipboard $HOVER \
+           --set clipboard icon=󰅌 icon.color=$CYAN \
+                 click_script="$HELPERS/hotkey $MACCY_KEY" \
+                 script="$PLUGIN_DIR/clipboard.sh"
+
 sketchybar --add item docker right \
            --subscribe docker mouse.clicked mouse.exited.global $HOVER \
            --set docker update_freq=20 updates=on icon=󰡨 icon.color=$CYAN drawing=off \
@@ -188,7 +197,7 @@ for app in "Slack|slack" "Microsoft Teams|microsoft_teams" "Microsoft Outlook|mi
                    script="$PLUGIN_DIR/notif.sh '$name'"
 done
 
-island island.tools capture docker '/notif\..*/'
+island island.tools capture clipboard docker '/notif\..*/'
 gap gap.right4 right
 
 # --- Lo que suena en el navegador ---
