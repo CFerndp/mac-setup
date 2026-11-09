@@ -1,0 +1,86 @@
+# CLAUDE.md
+
+Repo con la configuración del Mac de trabajo de Cristian: AeroSpace con los atajos
+de Omarchy, Caps Lock como SUPER, barra SketchyBar y el tema propio Neon Noir.
+Se habla en español, también en commits, comentarios y README.
+
+## Cómo está montado
+
+- `dotfiles/` replica rutas de `~`. **Lo que hay en `~` son enlaces a este repo**
+  (los crea `link.sh`), así que editar `~/.config/sketchybar/...` es editar el repo.
+  Edita aquí, no copies archivos a `~`.
+- `link.sh` enlaza y compila los helpers (Swift y AppleScript). Ejecútalo tras añadir
+  un archivo nuevo que deba enlazarse (y añádelo a la lista de `link` del script).
+- `setup.sh` es la instalación completa en un Mac nuevo. Si instalas algo con
+  Homebrew, añádelo aquí también.
+- `snippets/` guarda lo que vive en archivos personales que no están en el repo
+  (`~/.zshrc`, `settings.json` de Zed y VS Code). Si los cambias, actualiza el snippet.
+- El README documenta todo lo instalado y configurado; mantenlo al día con cada cambio.
+
+## Restricciones
+
+- **Ordenador corporativo gestionado con Intune.** Solo software open source y
+  conocido. Nada que pida desactivar SIP ni inyecte código en el sistema
+  (yabai con scripting addition, cDock, MacForge…). Prefiere herramientas nativas
+  o un helper propio pequeño a una dependencia de terceros.
+- Taps de terceros: solo `felixkratz/formulae` y `nikitabobko/tap`, con
+  `brew trust --formula` por fórmula, no por tap entero.
+- Instalaciones con `sudo` (p. ej. casks con instalador .pkg) las tiene que lanzar el
+  usuario en su terminal: pide la contraseña.
+- Claude no tiene permiso de Grabación de pantalla: no puede hacer capturas para
+  verificar lo visual. Verifica con `sketchybar --query` y pide al usuario que mire.
+
+## Teclado y AeroSpace
+
+- SUPER = Caps Lock → Karabiner lo convierte en `ctrl+alt+cmd`. En AeroSpace:
+  `ctrl-alt-cmd-…` y `ctrl-alt-cmd-shift-…`. Combinaciones SUPER+Ctrl o SUPER+Alt no
+  se distinguen de SUPER solo: no las uses.
+- Teclado físico español ISO; `key-mapping.preset = 'qwerty'` usa posiciones físicas
+  de EE. UU. (`minus`/`equal` son `'` y `¡`). Evita atajos con Option: rompen `@ # |`.
+- Escritorios 1–5 en la pantalla externa (`'^(?!built-in)'`) y 6–10 en el portátil.
+  Máximo dos pantallas.
+- Validar y recargar: `aerospace reload-config --dry-run && aerospace reload-config`.
+
+## SketchyBar
+
+- **Filosofía: solo iconos.** El dato aparece al pasar el ratón (`plugins/hover.sh`:
+  `source` + `hover "texto"` + `"${HOVER_ARGS[@]}"`, y suscribir el item a
+  `mouse.entered mouse.exited`). El clic abre un popup con más. El color del icono
+  avisa de estados importantes (batería baja, CPU alta, música sonando).
+- Popups: usa `$POPUP` definido en `sketchybarrc` para el estilo común.
+- Los scripts corren desde un servicio de launchd sin el PATH de Homebrew: exporta
+  `PATH="/opt/homebrew/bin:$PATH"` si llamas a `aerospace`, `SwitchAudioSource`, etc.
+- Recargar: `sketchybar --reload`. Reiniciar servicio: `brew services restart sketchybar`.
+- Probar un plugin sin ratón:
+  `NAME=cpu SENDER=mouse.entered CONFIG_DIR=~/.config/sketchybar bash plugins/cpu.sh`
+  y luego `sketchybar --query cpu`. Vuelve a lanzarlo con `mouse.exited` para dejarlo bien.
+- No pruebes botones con efectos (play de música, cambiar dispositivo de audio…) sin
+  avisar: afectan al usuario en directo. Si cambias algo para probar, déjalo como estaba.
+
+## Tema Neon Noir
+
+Paleta en `dotfiles/.config/sketchybar/colors.sh` (y repetida en WezTerm, bordes,
+fastfetch, el tema de Zed y el snippet de VS Code; cambia todos a la vez):
+
+| | Hex |
+|---|---|
+| Fondo | `#0b0b12` |
+| Superficie | `#1f1f2e` |
+| Apagado | `#6c6c8a` |
+| Texto | `#d7d7e8` |
+| Magenta (activo) | `#ff2a6d` |
+| Cian (acento) | `#05d9e8` |
+| Violeta | `#b967ff` |
+| Verde | `#00ff9f` |
+| Amarillo | `#f3e600` |
+| Rojo | `#d1001f` |
+
+Iconos: JetBrainsMono Nerd Font; iconos de apps con `sketchybar-app-font`
+(`plugins/icon_map.sh`, de su release v3.0.21).
+
+## Git
+
+- Remoto `git@github.com:CFerndp/mac-setup.git`, rama `main`.
+- Autor del repo: `CFerndp <CFerndp@users.noreply.github.com>` (configurado en local).
+- Mensajes en español con Conventional Commits (`feat:`, `fix:`, `docs:`…).
+- Antes de commitear, revisa que no se cuela nada sensible ni corporativo.
