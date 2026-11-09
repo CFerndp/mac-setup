@@ -5,6 +5,11 @@ export PATH="/opt/homebrew/bin:$PATH"
 source "$CONFIG_DIR/colors.sh"
 HOVER="${TMPDIR:-/tmp}/sketchybar_audio_hover"
 
+if [ "$SENDER" = "mouse.exited.global" ]; then
+  sketchybar --set "$NAME" popup.drawing=off
+  exit 0
+fi
+
 short() { [ ${#1} -gt 14 ] && printf '%s…' "${1:0:13}" || printf '%s' "$1"; }
 
 icon_for() {
@@ -31,6 +36,11 @@ add_section() { # $1 = output|input, $2 = título, $3 = dispositivo actual
                      click_script="SwitchAudioSource -t $1 -i $id >/dev/null; sketchybar --set audio popup.drawing=off --trigger audio_change"
   done < <(SwitchAudioSource -a -t "$1" -f cli)
 }
+
+if [ "$SENDER" = "mouse.clicked" ] && [ "$BUTTON" = "right" ]; then
+  open "x-apple.systempreferences:com.apple.Sound-Settings.extension"
+  exit 0
+fi
 
 if [ "$SENDER" = "mouse.clicked" ]; then
   sketchybar --remove '/audio\.dev\..*/' 2>/dev/null

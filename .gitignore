@@ -3,6 +3,7 @@
 # Helpers compilados por link.sh
 dotfiles/.config/sketchybar/helpers/inputsource
 dotfiles/.config/sketchybar/helpers/mediakey
+dotfiles/.config/sketchybar/helpers/menus
 dotfiles/.config/sketchybar/helpers/*.scpt
 
 # Lo que Karabiner genera solo

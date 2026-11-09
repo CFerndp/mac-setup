@@ -7,6 +7,11 @@ source "$CONFIG_DIR/plugins/hover.sh"
 DOCKER="$(command -v docker)"
 WEZTERM=/Applications/WezTerm.app/Contents/MacOS/wezterm
 
+if [ "$SENDER" = "mouse.exited.global" ]; then
+  sketchybar --set "$NAME" popup.drawing=off
+  exit 0
+fi
+
 if ! "$DOCKER" info >/dev/null 2>&1; then
   sketchybar --set "$NAME" drawing=off popup.drawing=off
   exit 0

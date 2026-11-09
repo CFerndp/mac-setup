@@ -4,6 +4,11 @@ source "$CONFIG_DIR/colors.sh"
 source "$CONFIG_DIR/plugins/hover.sh"
 IS="$CONFIG_DIR/helpers/inputsource"
 
+if [ "$SENDER" = "mouse.exited.global" ]; then
+  sketchybar --set "$NAME" popup.drawing=off
+  exit 0
+fi
+
 code() {
   case "$1" in
     *Spanish*) echo ES ;;

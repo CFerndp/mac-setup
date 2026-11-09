@@ -88,29 +88,45 @@ No usa extensiones de terceros: en Zed es un tema propio y en VS Code son ajuste
 ### Barra (SketchyBar)
 
 **Filosofía:** solo iconos. El dato aparece al pasar el ratón (con `plugins/hover.sh`)
-y el clic lleva a más. Los colores avisan sin tener que pasar el ratón.
+y el clic lleva a más. Los colores avisan sin tener que pasar el ratón. Los menús
+emergentes se cierran solos al sacar el ratón de la barra.
 
-- **Izquierda:** escritorios de cada pantalla con los iconos de sus apps (animados al
-  cambiar) y el icono de la app activa (nombre al pasar el ratón).
+La barra es transparente y los iconos van en **islas** (brackets con fondo propio),
+como en la config de FelixKratz: escritorios (una por pantalla) · app activa |
+música · herramientas · entrada/salida · sistema · fecha.
+
+- **Izquierda:**
+  - Escritorios de cada pantalla con los iconos de sus apps, animados al cambiar.
+    Los pinta un solo script (`plugins/spaces.sh`, lanzado por el item oculto
+    `spaces.observer`) en vez de uno por escritorio.
+  - App activa: su icono (nombre al pasar el ratón). **Clic: los escritorios se
+    cambian por los menús de la app** (Archivo, Edición…), y otro clic los devuelve.
+    Así no hace falta la barra de macOS.
 - **Derecha:**
 
-  | Icono | Al pasar el ratón | Clic |
-  |---|---|---|
-  | Música del navegador (magenta = suena, gris = pausa) | Título | Fuente, estado, anterior / play-pausa / siguiente, "Ir a la pestaña" |
-  | Slack, Teams, Outlook (solo si hay sin leer) | Nº sin leer | Abre la app |
-  | Capturas | — | Shottr: área, pantalla, ventana, con scroll; grabación de macOS |
-  | Docker (verde = hay contenedores, oculto si Docker no corre) | Nº en marcha | Lista; clic en uno abre sus logs en WezTerm |
-  | Altavoz y micro | Nombres | Elegir dispositivo |
-  | Teclado | Distribución (US / ES / ABC) | Cambiar |
-  | Red (Wi-Fi, cable o rojo sin conexión) | Tipo e IP | Abre los ajustes de Wi-Fi / red del sistema |
-  | Volumen (el icono indica el nivel) | % | Deslizador, silencio y controles de reproducción |
-  | CPU (cian / amarillo ≥ 50 % / rojo ≥ 80 %) | % | — |
-  | Batería (verde / amarillo / rojo si está baja) | %, cargando o tiempo restante | — |
-  | Fecha "L 09/11 10:37" | Fecha completa | — |
+  | Icono | Al pasar el ratón | Clic | Otros |
+  |---|---|---|---|
+  | Música del navegador (magenta = suena, gris = pausa) | Título | Fuente, estado, anterior / play-pausa / siguiente, "Ir a la pestaña" | |
+  | Slack, Teams, Outlook (solo si hay sin leer) | Nº sin leer | Abre la app | |
+  | Capturas | — | Shottr: área, pantalla, ventana, con scroll; grabación de macOS | |
+  | Docker (verde = hay contenedores, oculto si Docker no corre) | Nº en marcha | Lista; clic en uno abre sus logs en WezTerm | |
+  | Altavoz y micro | Nombres | Elegir dispositivo | Clic derecho: ajustes de sonido |
+  | Teclado | Distribución (US / ES / ABC) | Cambiar | |
+  | Volumen (el icono indica el nivel) | % | Deslizador, silencio y controles de reproducción | Rueda: subir/bajar. Clic derecho: ajustes de sonido |
+  | Red (Wi-Fi, cable o rojo sin conexión) | Tipo e IP | Ajustes de Wi-Fi / red del sistema | |
+  | CPU (cian / amarillo ≥ 50 % / rojo ≥ 80 %) | % | Monitor de Actividad | |
+  | Batería (verde / amarillo / rojo si está baja) | %, cargando o tiempo restante | — | |
+  | Fecha "L 09/11 10:37" | Fecha completa | — | |
 
   Lo que suena puede salir solo como "YouTube Music" cuando esa web no pone la
   canción en el título de la pestaña (por ejemplo, en pausa).
 - `topmost=on`: la barra queda por encima de la barra de macOS cuando esta aparece.
+- Los menús de la app usan `helpers/menus` (`menus.swift`): `menus list` y
+  `menus select <n>`. Idea de FelixKratz reescrita en Swift con APIs públicas. Necesita
+  permiso de Accesibilidad para SketchyBar.
+- `updates=when_shown` por defecto: los scripts no corren si su item no se ve. Los
+  items que empiezan ocultos y se muestran solos (avisos, Docker, música) llevan
+  `updates=on`.
 - El selector de teclado usa `helpers/inputsource`, una herramienta propia en Swift
   (`inputsource.swift`, compilada con `swiftc -O inputsource.swift -o inputsource`).
   Comandos: `list`, `current`, `select <id>`.

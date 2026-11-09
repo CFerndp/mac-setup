@@ -47,7 +47,14 @@ Se habla en español, también en commits, comentarios y README.
   `source` + `hover "texto"` + `"${HOVER_ARGS[@]}"`, y suscribir el item a
   `mouse.entered mouse.exited`). El clic abre un popup con más. El color del icono
   avisa de estados importantes (batería baja, CPU alta, música sonando).
-- Popups: usa `$POPUP` definido en `sketchybarrc` para el estilo común.
+- Islas: cada grupo de iconos va en un bracket con `island <nombre> <miembros…>` y
+  las islas se separan con `gap`. Un item nuevo debe entrar en la isla que le toque.
+- Popups: usa `$POPUP` para el estilo común, suscribe el item a `mouse.exited.global`
+  y ciérralo en el script (o usa `plugins/popup.sh` si solo abre/cierra).
+- `updates=when_shown` por defecto: un item que empieza oculto y debe mostrarse solo
+  necesita `updates=on`.
+- Regex de items: SketchyBar no acepta `+`; usa `'/menu\..*/'`. Ojo con `'/space\..*/'`,
+  que también coge `spaces.observer` y las islas `spaces.m*`.
 - Los scripts corren desde un servicio de launchd sin el PATH de Homebrew: exporta
   `PATH="/opt/homebrew/bin:$PATH"` si llamas a `aerospace`, `SwitchAudioSource`, etc.
 - Recargar: `sketchybar --reload`. Reiniciar servicio: `brew services restart sketchybar`.

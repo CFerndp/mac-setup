@@ -7,6 +7,11 @@ source "$CONFIG_DIR/plugins/hover.sh"
 HELPERS="$CONFIG_DIR/helpers"
 STATE="${TMPDIR:-/tmp}/sketchybar_media"
 
+if [ "$SENDER" = "mouse.exited.global" ]; then
+  sketchybar --set "$NAME" popup.drawing=off
+  exit 0
+fi
+
 if [ "$SENDER" = "mouse.clicked" ]; then
   sketchybar --set "$NAME" popup.drawing=toggle
   exit 0
