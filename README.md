@@ -172,12 +172,14 @@ música · herramientas · entrada/salida · sistema · fecha.
 `dotfiles/.config/neon-wallpaper/`:
 
 - `index.html`: animación Neon Noir en canvas. Modos con `?mode=`:
-  - `freefall` (**monitor externo, por defecto**): una figura cae con los brazos
-    abiertos entre muros de rascacielos que suben; la lluvia sube y abajo solo hay
-    niebla. Opresión y libertad;
+  - `window` (**monitor externo, por defecto**): la figura de la azotea, sentada en el
+    suelo de un piso oscuro frente a un ventanal que ocupa todo el ancho; fuera, la
+    ciudad desenfocada por la lluvia y, en el cristal, gotas que resbalan a tirones;
   - `edge` (**portátil, por defecto**): una figura sentada de espaldas al borde de una
     azotea sobre una ciudad inmensa, con lluvia fina, un rótulo roto «NO EXIT» y algún
     relámpago violeta;
+  - `freefall`: una figura cae con los brazos abiertos entre muros de rascacielos que
+    suben;
   - `city`: ciudad nocturna con sol synthwave y suelo de neón en movimiento;
   - `minimal`: casi negro con retícula tenue, barrido lento y cursor de terminal.
 

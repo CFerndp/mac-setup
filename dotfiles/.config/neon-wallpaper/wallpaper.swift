@@ -4,7 +4,7 @@
 //
 //   wallpaper [--external <modo>] [--builtin <modo>]
 //
-// Modos de index.html: city, minimal, freefall, edge. Por defecto: freefall en
+// Modos de index.html: city, minimal, freefall, edge, window. Por defecto: window en
 // monitores externos y edge en la pantalla del portátil. Se rehace solo al conectar o quitar pantallas.
 import AppKit
 import WebKit
@@ -17,7 +17,7 @@ func option(_ name: String, _ fallback: String) -> String {
     if let i = args.firstIndex(of: name), i + 1 < args.count { return args[i + 1] }
     return fallback
 }
-let externalMode = option("--external", "freefall")
+let externalMode = option("--external", "window")
 let builtinMode = option("--builtin", "edge")
 
 func isBuiltin(_ screen: NSScreen) -> Bool {
