@@ -26,6 +26,7 @@ link .aerospace.toml
 link .wezterm.lua
 link .config/sketchybar
 link .config/borders
+link .config/aerospace
 link .config/karabiner
 link .config/fastfetch
 link .config/zed/themes/neon-noir.json

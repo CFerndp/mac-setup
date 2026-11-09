@@ -29,6 +29,7 @@ dotfiles/            → se enlaza en ~ (misma ruta)
   .aerospace.toml
   .wezterm.lua
   .config/sketchybar/   barra: sketchybarrc, colors.sh, plugins/, helpers/
+  .config/aerospace/    scripts de AeroSpace (minimizar / restaurar)
   .config/borders/      bordes de ventana
   .config/karabiner/    Caps Lock = SUPER
   .config/fastfetch/
@@ -54,6 +55,7 @@ link.sh              → solo los enlaces y los helpers
 | Archivo | Qué hace |
 |---|---|
 | `~/.aerospace.toml` | AeroSpace con los atajos de Omarchy |
+| `~/.config/aerospace/minimize.sh` | Minimizar y restaurar ventanas (SUPER+M / SUPER+Shift+M); recuerda el orden en que se minimizaron |
 | `~/.config/karabiner/karabiner.json` | Caps Lock = SUPER (ctrl+opt+cmd); un toque rápido = Bloq Mayús |
 | `~/.wezterm.lua` | WezTerm: JetBrainsMono Nerd Font 14 pt, paleta Neon Noir, 85 % de opacidad con desenfoque, sin barra de título |
 | `~/.config/sketchybar/` | Barra superior flotante y redondeada (ver abajo). Colores en `colors.sh`, scripts en `plugins/`, iconos de apps en `plugins/icon_map.sh` (de sketchybar-app-font v3.0.21) |
@@ -186,7 +188,8 @@ música · herramientas · entrada/salida · sistema · fecha.
   | SUPER + L | Mosaico / acordeón (si las ventanas no salen lado a lado, es esto) |
   | SUPER + T | Flotante / mosaico |
   | SUPER + F | Pantalla completa |
-  | SUPER + M | Minimizar |
+  | SUPER + M | Minimizar al Dock |
+  | SUPER + Shift + M | Restaurar la última minimizada (si no, las de la app activa) |
   | SUPER + `'` / `¡` (+ Shift) | Ancho (alto) − / + |
   | SUPER + 1…0 | Ir al escritorio |
   | SUPER + Shift + 1…0 | Mover la ventana al escritorio |

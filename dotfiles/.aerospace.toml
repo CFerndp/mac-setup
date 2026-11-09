@@ -75,7 +75,9 @@ gaps.outer.right = 10
     ctrl-alt-cmd-t = 'layout floating tiling'
     ctrl-alt-cmd-f = 'fullscreen'
     ctrl-alt-cmd-l = 'layout tiles accordion'
-    ctrl-alt-cmd-m = 'macos-native-minimize'
+    # Minimizar al Dock y restaurar la última minimizada (~/.config/aerospace/minimize.sh)
+    ctrl-alt-cmd-m = 'exec-and-forget ~/.config/aerospace/minimize.sh min'
+    ctrl-alt-cmd-shift-m = 'exec-and-forget ~/.config/aerospace/minimize.sh restore'
 
     ctrl-alt-cmd-left = 'focus left'
     ctrl-alt-cmd-right = 'focus right'
