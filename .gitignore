@@ -1,0 +1,10 @@
+.DS_Store
+
+# Helpers compilados por link.sh
+dotfiles/.config/sketchybar/helpers/inputsource
+dotfiles/.config/sketchybar/helpers/mediakey
+dotfiles/.config/sketchybar/helpers/*.scpt
+
+# Lo que Karabiner genera solo
+dotfiles/.config/karabiner/assets/
+dotfiles/.config/karabiner/automatic_backups/

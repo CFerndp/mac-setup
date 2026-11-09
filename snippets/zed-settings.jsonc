@@ -1,0 +1,9 @@
+// En ~/.config/zed/settings.json: activar el tema Neon Noir
+// (el tema está en dotfiles/.config/zed/themes/neon-noir.json, enlazado por link.sh).
+{
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "Neon Noir",
+  },
+}

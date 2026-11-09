@@ -1,0 +1,24 @@
+{
+  "profiles": [
+    {
+      "name": "Default profile",
+      "selected": true,
+      "virtual_hid_keyboard": { "keyboard_type_v2": "iso" },
+      "complex_modifications": {
+        "rules": [
+          {
+            "description": "Caps Lock -> SUPER (ctrl+opt+cmd); pulsado solo = Caps Lock",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": { "key_code": "caps_lock", "modifiers": { "optional": ["any"] } },
+                "to": [{ "key_code": "left_control", "modifiers": ["left_option", "left_command"] }],
+                "to_if_alone": [{ "key_code": "caps_lock", "hold_down_milliseconds": 200 }]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

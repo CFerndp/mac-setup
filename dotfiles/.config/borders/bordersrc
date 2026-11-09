@@ -1,0 +1,11 @@
+#!/bin/bash
+# JankyBorders: borde con degradado neón en la ventana activa (tema Neon Noir).
+options=(
+  style=round
+  width=5.0
+  hidpi=on
+  active_color='gradient(top_left=0xffff2a6d,bottom_right=0xff05d9e8)'
+  inactive_color=0xff1f1f2e
+)
+
+borders "${options[@]}"

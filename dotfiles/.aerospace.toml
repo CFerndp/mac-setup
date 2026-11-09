@@ -1,0 +1,134 @@
+# AeroSpace con los atajos de Omarchy (https://github.com/basecamp/omarchy).
+# SUPER = Caps Lock. Karabiner lo convierte en ctrl+alt+cmd, que aquí se escribe
+# "ctrl-alt-cmd". SUPER+SHIFT es "ctrl-alt-cmd-shift".
+# Copia de la config anterior: ~/.aerospace.toml.bak
+
+config-version = 2
+
+start-at-login = true
+auto-reload-config = true
+
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+accordion-padding = 30
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+# Avisa a SketchyBar para que resalte el escritorio activo
+exec-on-workspace-change = ['/bin/bash', '-c',
+    '/opt/homebrew/bin/sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
+]
+automatically-unhide-macos-hidden-apps = false
+
+persistent-workspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
+# Las teclas se refieren a la posición física en un teclado QWERTY de EE. UU.,
+# igual que los keycodes de Omarchy: "minus" y "equal" son las dos teclas a la
+# derecha del 0 (' y ¡ en el teclado español).
+key-mapping.preset = 'qwerty'
+
+# Huecos como en Omarchy (gaps_in = 5, gaps_out = 10)
+gaps.inner.horizontal = 5
+gaps.inner.vertical = 5
+gaps.outer.left = 10
+gaps.outer.bottom = 10
+# Arriba se deja sitio a SketchyBar (flota a 6 px y mide 32). En el portátil macOS ya reserva la
+# franja del notch aunque la barra de menú esté oculta, así que basta con 10.
+gaps.outer.top = [{ monitor.'built-in' = 10 }, 46]
+gaps.outer.right = 10
+
+# 1-5 en la pantalla externa (cualquiera que no sea la del portátil), 6-10 en el
+# portátil. El valor es una regex que se busca en
+# el nombre del monitor (ver: aerospace list-monitors). Si esa pantalla no está
+# conectada, sus escritorios pasan a la que haya.
+[workspace-to-monitor-force-assignment]
+    1 = '^(?!built-in)'
+    2 = '^(?!built-in)'
+    3 = '^(?!built-in)'
+    4 = '^(?!built-in)'
+    5 = '^(?!built-in)'
+    6 = 'built-in'
+    7 = 'built-in'
+    8 = 'built-in'
+    9 = 'built-in'
+    10 = 'built-in'
+
+[mode.main.binding]
+
+    # --- Apps ---
+    ctrl-alt-cmd-enter = 'exec-and-forget /Applications/WezTerm.app/Contents/MacOS/wezterm start'
+    ctrl-alt-cmd-shift-enter = 'exec-and-forget open -na "Brave Browser" --args --new-window'
+    ctrl-alt-cmd-shift-b = 'exec-and-forget open -na "Brave Browser" --args --new-window'
+    ctrl-alt-cmd-shift-f = 'exec-and-forget open ~'
+    ctrl-alt-cmd-shift-n = 'exec-and-forget open -a Zed'
+    ctrl-alt-cmd-shift-t = 'exec-and-forget /Applications/WezTerm.app/Contents/MacOS/wezterm start -- /opt/homebrew/bin/btop'
+    ctrl-alt-cmd-space = 'exec-and-forget open -b com.apple.apps.launcher'
+    ctrl-alt-cmd-c = 'exec-and-forget open shottr://grab/area'
+
+    # --- Ventanas ---
+    ctrl-alt-cmd-w = 'close'
+    ctrl-alt-cmd-q = 'close'
+    ctrl-alt-cmd-j = 'layout tiles horizontal vertical'
+    ctrl-alt-cmd-t = 'layout floating tiling'
+    ctrl-alt-cmd-f = 'fullscreen'
+    ctrl-alt-cmd-l = 'layout tiles accordion'
+    ctrl-alt-cmd-m = 'macos-native-minimize'
+
+    ctrl-alt-cmd-left = 'focus left'
+    ctrl-alt-cmd-right = 'focus right'
+    ctrl-alt-cmd-up = 'focus up'
+    ctrl-alt-cmd-down = 'focus down'
+
+    ctrl-alt-cmd-shift-left = 'move left'
+    ctrl-alt-cmd-shift-right = 'move right'
+    ctrl-alt-cmd-shift-up = 'move up'
+    ctrl-alt-cmd-shift-down = 'move down'
+
+    ctrl-alt-cmd-minus = 'resize width -100'
+    ctrl-alt-cmd-equal = 'resize width +100'
+    ctrl-alt-cmd-shift-minus = 'resize height -100'
+    ctrl-alt-cmd-shift-equal = 'resize height +100'
+
+    # --- Escritorios ---
+    ctrl-alt-cmd-1 = 'workspace 1'
+    ctrl-alt-cmd-2 = 'workspace 2'
+    ctrl-alt-cmd-3 = 'workspace 3'
+    ctrl-alt-cmd-4 = 'workspace 4'
+    ctrl-alt-cmd-5 = 'workspace 5'
+    ctrl-alt-cmd-6 = 'workspace 6'
+    ctrl-alt-cmd-7 = 'workspace 7'
+    ctrl-alt-cmd-8 = 'workspace 8'
+    ctrl-alt-cmd-9 = 'workspace 9'
+    ctrl-alt-cmd-0 = 'workspace 10'
+
+    ctrl-alt-cmd-shift-1 = 'move-node-to-workspace --focus-follows-window 1'
+    ctrl-alt-cmd-shift-2 = 'move-node-to-workspace --focus-follows-window 2'
+    ctrl-alt-cmd-shift-3 = 'move-node-to-workspace --focus-follows-window 3'
+    ctrl-alt-cmd-shift-4 = 'move-node-to-workspace --focus-follows-window 4'
+    ctrl-alt-cmd-shift-5 = 'move-node-to-workspace --focus-follows-window 5'
+    ctrl-alt-cmd-shift-6 = 'move-node-to-workspace --focus-follows-window 6'
+    ctrl-alt-cmd-shift-7 = 'move-node-to-workspace --focus-follows-window 7'
+    ctrl-alt-cmd-shift-8 = 'move-node-to-workspace --focus-follows-window 8'
+    ctrl-alt-cmd-shift-9 = 'move-node-to-workspace --focus-follows-window 9'
+    ctrl-alt-cmd-shift-0 = 'move-node-to-workspace --focus-follows-window 10'
+
+    ctrl-alt-cmd-tab = 'workspace --wrap-around next'
+    ctrl-alt-cmd-shift-tab = 'workspace --wrap-around prev'
+
+    # --- Extras de AeroSpace (no existen en Omarchy) ---
+    ctrl-alt-cmd-backtick = 'workspace-back-and-forth'
+    ctrl-alt-cmd-shift-backtick = 'move-workspace-to-monitor --wrap-around next'
+    ctrl-alt-cmd-shift-semicolon = 'mode service'
+
+# Modo servicio: SUPER+SHIFT+Ñ, luego una tecla
+[mode.service.binding]
+    esc = ['reload-config', 'mode main']
+    r = ['flatten-workspace-tree', 'mode main']
+    backspace = ['close-all-windows-but-current', 'mode main']
+    left = ['join-with left', 'mode main']
+    right = ['join-with right', 'mode main']
+    up = ['join-with up', 'mode main']
+    down = ['join-with down', 'mode main']

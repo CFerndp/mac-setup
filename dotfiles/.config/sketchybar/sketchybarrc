@@ -1,0 +1,168 @@
+#!/bin/bash
+# SketchyBar al estilo de la Waybar de Omarchy, con los escritorios de AeroSpace.
+# Tema Neon Noir (colors.sh).
+
+export PATH="/opt/homebrew/bin:$PATH"
+source "$CONFIG_DIR/colors.sh"
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+FONT="JetBrainsMono Nerd Font"
+
+sketchybar --bar position=top height=32 y_offset=6 margin=10 corner_radius=14 \
+                 color=$BAR_COLOR blur_radius=30 \
+                 border_width=1 border_color=$BAR_BORDER \
+                 display=all topmost=on padding_left=10 padding_right=10 shadow=off
+
+sketchybar --default icon.font="$FONT:Bold:15.0" label.font="$FONT:Bold:13.0" \
+                     icon.color=$TEXT label.color=$TEXT \
+                     icon.padding_left=6 icon.padding_right=4 \
+                     label.padding_left=4 label.padding_right=6
+
+# --- Izquierda: escritorios de AeroSpace (número + iconos de sus apps) ---
+sketchybar --add event aerospace_workspace_change
+
+for mid in $(aerospace list-monitors --format '%{monitor-id}'); do
+  display=$(aerospace list-monitors --format '%{monitor-id} %{monitor-appkit-nsscreen-screens-id}' \
+            | awk -v m="$mid" '$1 == m { print $2 }')
+  for sid in $(aerospace list-workspaces --monitor "$mid"); do
+    sketchybar --add item space.$sid left \
+               --subscribe space.$sid aerospace_workspace_change front_app_switched space_windows_change \
+               --set space.$sid display=$display \
+                     icon="$sid" icon.padding_left=10 icon.padding_right=4 \
+                     label.font="sketchybar-app-font:Regular:14.0" \
+                     label.padding_left=2 label.padding_right=10 label.y_offset=-1 \
+                     background.color=$MAGENTA background.corner_radius=10 \
+                     background.height=22 background.drawing=off \
+                     click_script="aerospace workspace $sid" \
+                     script="$PLUGIN_DIR/aerospace.sh $sid"
+  done
+done
+
+sketchybar --add item front_app left \
+           --subscribe front_app front_app_switched mouse.entered mouse.exited \
+           --set front_app icon.font="sketchybar-app-font:Regular:14.0" icon.color=$CYAN \
+                 label.color=$CYAN padding_left=10 \
+                 label.font="$FONT:Bold Italic:13.0" \
+                 script="$PLUGIN_DIR/front_app.sh"
+
+# --- Derecha (se añaden de derecha a izquierda) ---
+POPUP="popup.background.color=$BG popup.background.corner_radius=12 \
+       popup.background.border_width=1 popup.background.border_color=$VIOLET \
+       popup.blur_radius=30 popup.y_offset=6"
+
+sketchybar --add item clock right \
+           --subscribe clock mouse.entered mouse.exited \
+           --set clock update_freq=10 icon=󰥔 icon.color=$MAGENTA \
+                 script="$PLUGIN_DIR/clock.sh" \
+           --add item battery right \
+           --subscribe battery system_woke power_source_change mouse.entered mouse.exited \
+           --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+           --add item cpu right \
+           --subscribe cpu mouse.entered mouse.exited \
+           --set cpu update_freq=5 icon=󰻠 icon.color=$CYAN \
+                 script="$PLUGIN_DIR/cpu.sh" \
+           --add item volume right \
+           --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited \
+           --set volume icon.color=$VIOLET script="$PLUGIN_DIR/volume.sh" $POPUP
+
+# Control de volumen (al hacer clic en el volumen): deslizador + silencio
+sketchybar --add slider volume.slider popup.volume 180 \
+           --subscribe volume.slider mouse.clicked \
+           --set volume.slider icon=󰕾 icon.color=$VIOLET \
+                 slider.highlight_color=$MAGENTA slider.background.height=6 \
+                 slider.background.corner_radius=3 slider.background.color=$SURFACE \
+                 slider.knob=󰝤 slider.knob.color=$CYAN \
+                 script="$PLUGIN_DIR/volume_slider.sh" \
+           --add item volume.mute popup.volume \
+           --set volume.mute icon=󰖁 icon.color=$MAGENTA \
+                 click_script="osascript -e 'set volume output muted not (output muted of (get volume settings))'"
+
+# Controles de reproducción en el mismo panel (teclas multimedia del sistema)
+MEDIAKEY="$CONFIG_DIR/helpers/mediakey"
+sketchybar --add item volume.prev popup.volume \
+           --set volume.prev icon=󰒮 icon.color=$CYAN label="Anterior" \
+                 click_script="$MEDIAKEY previous" \
+           --add item volume.play popup.volume \
+           --set volume.play icon=󰐎 icon.color=$MAGENTA label="Reproducir / Pausa" \
+                 click_script="$MEDIAKEY play" \
+           --add item volume.next popup.volume \
+           --set volume.next icon=󰒭 icon.color=$CYAN label="Siguiente" \
+                 click_script="$MEDIAKEY next"
+
+# Distribución de teclado; clic = cambiar. Se actualiza cuando macOS avisa del cambio.
+sketchybar --add event input_change AppleSelectedInputSourcesChangedNotification \
+           --add item keyboard right \
+           --subscribe keyboard input_change mouse.clicked mouse.entered mouse.exited \
+           --set keyboard icon=󰌌 icon.color=$VIOLET \
+                 script="$PLUGIN_DIR/keyboard.sh" $POPUP
+
+# Altavoz y micro seleccionados; clic = elegir dispositivo
+sketchybar --add event audio_change \
+           --add item audio right \
+           --subscribe audio audio_change mouse.clicked mouse.entered mouse.exited system_woke \
+           --set audio update_freq=15 icon.color=$CYAN label.color=$TEXT \
+                 script="$PLUGIN_DIR/audio.sh" $POPUP
+
+# Docker: contenedores en marcha; clic = lista (y logs de cada uno). Oculto si Docker no corre
+sketchybar --add item docker right \
+           --subscribe docker mouse.clicked mouse.entered mouse.exited \
+           --set docker update_freq=20 icon=󰡨 icon.color=$CYAN drawing=off \
+                 script="$PLUGIN_DIR/docker.sh" $POPUP
+
+# Capturas de pantalla (Shottr + grabación de macOS)
+sketchybar --add item capture right \
+           --set capture icon=󰄀 icon.color=$MAGENTA label.drawing=off \
+                 click_script="sketchybar --set capture popup.drawing=toggle" $POPUP
+for entry in "󰩭|Área|open shottr://grab/area" \
+             "󰍹|Pantalla completa|open shottr://grab/fullscreen" \
+             "󰖯|Ventana activa|open shottr://grab/window/active" \
+             "󰶘|Con scroll|open shottr://grab/scrolling" \
+             "󰑋|Grabar pantalla|open -a Screenshot"; do
+  IFS='|' read -r icon label cmd <<<"$entry"
+  id="capture.$(echo "$label" | tr -cd '[:alnum:]')"
+  sketchybar --add item "$id" popup.capture \
+             --set "$id" icon="$icon" icon.color=$CYAN label="$label" \
+                   click_script="sketchybar --set capture popup.drawing=off; sleep 0.2; $cmd"
+done
+
+# Avisos sin leer de Slack, Teams y Outlook (solo se ven si hay alguno)
+for app in "Slack|slack" "Microsoft Teams|microsoft_teams" "Microsoft Outlook|microsoft_outlook"; do
+  IFS='|' read -r name icon <<<"$app"
+  id="notif.$icon"
+  sketchybar --add item "$id" right \
+             --subscribe "$id" mouse.entered mouse.exited \
+             --set "$id" drawing=off update_freq=10 \
+                   icon=":$icon:" icon.font="sketchybar-app-font:Regular:14.0" \
+                   icon.color=$MAGENTA label.color=$MAGENTA \
+                   click_script="open -a '$name'" \
+                   script="$PLUGIN_DIR/notif.sh '$name'"
+done
+
+# Lo que suena en el navegador; clic = menú con controles e ir a la pestaña
+MEDIAKEY="$CONFIG_DIR/helpers/mediakey"
+FOCUS_TAB='IFS="|" read -r b w t < "${TMPDIR:-/tmp}/sketchybar_media" && osascript "$CONFIG_DIR/helpers/focus_tab.scpt" "$b" "$w" "$t"'
+sketchybar --add item media right \
+           --subscribe media mouse.clicked mouse.entered mouse.exited \
+           --set media drawing=off update_freq=3 icon.padding_right=6 \
+                 label.max_chars=28 scroll_texts=on \
+                 script="$PLUGIN_DIR/media.sh" $POPUP \
+           --add item media.title popup.media \
+           --set media.title icon.drawing=off label.color=$TEXT \
+                 label.font="JetBrainsMono Nerd Font:Bold:14.0" \
+           --add item media.source popup.media \
+           --set media.source icon.color=$MAGENTA label.color=$MUTED \
+                 label.font="JetBrainsMono Nerd Font:Regular:11.0" \
+           --add item media.prev popup.media \
+           --set media.prev icon=󰒮 icon.color=$CYAN label="Anterior" \
+                 click_script="$MEDIAKEY previous; sleep 1; sketchybar --update" \
+           --add item media.play popup.media \
+           --set media.play icon.color=$MAGENTA \
+                 click_script="$MEDIAKEY play; sleep 1; sketchybar --update" \
+           --add item media.next popup.media \
+           --set media.next icon=󰒭 icon.color=$CYAN label="Siguiente" \
+                 click_script="$MEDIAKEY next; sleep 1; sketchybar --update" \
+           --add item media.focus popup.media \
+           --set media.focus icon=󰖟 icon.color=$VIOLET label="Ir a la pestaña" \
+                 click_script="sketchybar --set media popup.drawing=off; $FOCUS_TAB"
+
+sketchybar --update
+sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$(aerospace list-workspaces --focused)"

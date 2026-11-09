@@ -1,0 +1,43 @@
+// fastfetch con el tema Neon Noir: logo de Apple en degradado cian → violeta → magenta.
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "type": "builtin",
+    "source": "macos",
+    "color": {
+      "1": "38;2;5;217;232",
+      "2": "38;2;5;217;232",
+      "3": "38;2;185;103;255",
+      "4": "38;2;185;103;255",
+      "5": "38;2;255;42;109",
+      "6": "38;2;255;42;109"
+    },
+    "padding": { "top": 1, "right": 3 }
+  },
+  "display": {
+    "separator": "  ",
+    "color": {
+      "keys": "38;2;5;217;232",
+      "title": "38;2;255;42;109",
+      "separator": "38;2;108;108;138"
+    },
+    "key": { "width": 11 }
+  },
+  "modules": [
+    "title",
+    { "type": "separator", "string": "─" },
+    { "type": "os", "key": " os" },
+    { "type": "host", "key": "󰌢 host" },
+    { "type": "uptime", "key": "󰅐 uptime" },
+    { "type": "packages", "key": "󰏖 pkgs" },
+    { "type": "shell", "key": " shell" },
+    { "type": "terminal", "key": " term" },
+    { "type": "wm", "key": " wm" },
+    { "type": "cpu", "key": "󰻠 cpu" },
+    { "type": "memory", "key": " ram" },
+    { "type": "disk", "key": "󰋊 disk", "folders": "/" },
+    { "type": "battery", "key": "󰁹 bat" },
+    "break",
+    { "type": "colors", "symbol": "circle" }
+  ]
+}
