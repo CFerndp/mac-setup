@@ -2,7 +2,8 @@
 # Avisos sin leer de una app ($1 = nombre). Solo se ve el icono cuando hay alguno;
 # el número al pasar el ratón.
 source "$CONFIG_DIR/plugins/hover.sh"
-COUNT=$(lsappinfo info -only StatusLabel "$1" 2>/dev/null | sed -n 's/.*"label"="\([^"]*\)".*/\1/p')
+# El globo se lee del Dock (helpers/badges): lsappinfo ya no lo da en macOS 27.
+COUNT=$("$CONFIG_DIR/helpers/badges" "$1" 2>/dev/null)
 
 if [ -n "$COUNT" ]; then
   hover "$1 · $COUNT"

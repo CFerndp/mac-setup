@@ -149,6 +149,10 @@ music · tools · input/output · system · date.
 - The clipboard button uses `helpers/hotkey` (`hotkey.swift`): it presses a shortcut at
   keyboard level (`hotkey 8 cmd,shift` = Shift+Cmd+C). Maccy has no other way to be
   opened from outside. If you change its shortcut, change `MACCY_KEY` in `sketchybarrc`.
+- Unread badges (Slack, Teams, Outlook) use `helpers/badges` (`badges.swift`): it reads
+  the red Dock badge through Accessibility (`badges` lists them all, `badges Slack` prints
+  one). `lsappinfo` no longer exposes them on macOS 27. Needs Accessibility permission
+  for SketchyBar, and the app must be running (it shows in the Dock).
 - App menus use `helpers/menus` (`menus.swift`): `menus list` and `menus select <n>`.
   FelixKratz's idea, rewritten in Swift with public APIs. Needs Accessibility
   permission for SketchyBar.

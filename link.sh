@@ -50,6 +50,7 @@ swiftc -O inputsource.swift -o inputsource 2>/dev/null
 swiftc -O mediakey.swift -o mediakey 2>/dev/null
 swiftc -O menus.swift -o menus 2>/dev/null
 swiftc -O hotkey.swift -o hotkey 2>/dev/null
+swiftc -O badges.swift -o badges 2>/dev/null
 osacompile -o music_tabs.scpt music_tabs.applescript
 osacompile -o focus_tab.scpt focus_tab.applescript
 echo "ok"
