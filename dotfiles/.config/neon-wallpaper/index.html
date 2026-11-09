@@ -6,8 +6,10 @@
 <!--
   Fondo animado Neon Noir. Lo muestra helpers/wallpaper (una ventana al nivel del
   escritorio). Modos, con ?mode=…:
-    city     ciudad nocturna con sol synthwave y suelo de neón en movimiento
-    minimal  fondo casi negro con retícula tenue, barrido lento y un cursor de terminal
+    city      ciudad nocturna con sol synthwave y suelo de neón en movimiento
+    minimal   fondo casi negro con retícula tenue, barrido lento y un cursor de terminal
+    freefall  una figura en caída libre entre rascacielos (opresión y libertad)
+    edge      una figura sentada al borde de una azotea, bajo la lluvia
   Pensado para gastar poco: resolución normal (no Retina), pocos fps, capas fijas
   pre-renderizadas, solo se redibuja lo que se mueve y se pausa si no se ve.
 -->
@@ -28,7 +30,6 @@ const C = {
 };
 const params = new URLSearchParams(location.search);
 const MODE = params.get("mode") || "city";
-const FPS = MODE === "minimal" ? 12 : 24;
 
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
@@ -51,7 +52,7 @@ function resize() {
   canvas.width = W; canvas.height = H;
   horizon = Math.floor(H * 0.62);
   seed = 7;
-  MODE === "minimal" ? buildMinimal() : buildCity();
+  SCENE.build();
   fullRedraw = true;
 }
 
@@ -232,6 +233,284 @@ function drawMinimal(t) {
   }
 }
 
+
+// ----------------------------------------------------------- caída libre
+// Una figura cae con los brazos abiertos entre muros de rascacielos que suben a
+// los lados. La lluvia sube (eres tú quien cae). Arriba, una franja de cielo que se
+// cierra; abajo, niebla violeta y nada más.
+let ff = {};
+
+function wallStrip(width, color, density, glow) {
+  const tileH = H * 2;
+  const [c, g] = layer(Math.ceil(width), tileH);
+  g.fillStyle = color; g.fillRect(0, 0, width, tileH);
+  // Bordes de las plantas
+  g.fillStyle = "rgba(255,255,255,0.025)";
+  for (let y = 0; y < tileH; y += 46) g.fillRect(0, y, width, 2);
+  // Ventanas convertidas en estelas por la velocidad
+  for (let x = 8; x < width - 6; x += 11) {
+    for (let y = 0; y < tileH; y += 9) {
+      if (rand() > density) continue;
+      const len = 12 + rand() * 70;
+      g.globalAlpha = (0.15 + rand() * 0.55) * glow;
+      g.fillStyle = rand() < 0.6 ? C.cyan : C.magenta;
+      g.fillRect(x, y, 2, len);
+      y += len;
+    }
+  }
+  // Algún rótulo de neón que pasa de largo
+  for (let i = 0; i < 3; i++) {
+    const y = rand() * tileH, w = width * (0.3 + rand() * 0.5);
+    g.globalAlpha = 0.18 * glow; g.fillStyle = C.magenta; g.fillRect(width - w - 6, y - 6, w + 12, 18);
+    g.globalAlpha = 0.85 * glow; g.fillRect(width - w, y, w, 6);
+  }
+  g.globalAlpha = 1;
+  // Sombra hacia el hueco central
+  const shade = g.createLinearGradient(0, 0, width, 0);
+  shade.addColorStop(0, "rgba(0,0,0,0)"); shade.addColorStop(1, "rgba(0,0,0,0.45)");
+  g.fillStyle = shade; g.fillRect(0, 0, width, tileH);
+  return c;
+}
+
+function buildFreefall() {
+  const [c, g] = layer(W, H);
+  const bg = g.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, "#1c0f30"); bg.addColorStop(0.35, "#0d0a18"); bg.addColorStop(1, "#140a22");
+  g.fillStyle = bg; g.fillRect(0, 0, W, H);
+  const sky = g.createRadialGradient(W / 2, -H * 0.15, 0, W / 2, -H * 0.15, H * 0.65);
+  sky.addColorStop(0, "rgba(255,42,109,0.32)"); sky.addColorStop(1, "rgba(255,42,109,0)");
+  g.fillStyle = sky; g.fillRect(0, 0, W, H);
+  staticLayer = c;
+
+  const [f, fg] = layer(W, H);
+  const fog = fg.createLinearGradient(0, H * 0.5, 0, H);
+  fog.addColorStop(0, "rgba(185,103,255,0)"); fog.addColorStop(1, "rgba(185,103,255,0.30)");
+  fg.fillStyle = fog; fg.fillRect(0, 0, W, H);
+  ff.fog = f;
+
+  // De la capa más lejana (más hacia el centro, lenta) a la más cercana (borde, rápida)
+  ff.walls = [
+    { c: wallStrip(W * 0.34, "#140d24", 0.10, 0.5), speed: 0.05 },
+    { c: wallStrip(W * 0.26, "#0b0815", 0.14, 0.8), speed: 0.11 },
+    { c: wallStrip(W * 0.17, "#050409", 0.16, 1.0), speed: 0.22 },
+  ];
+  ff.rain = Array.from({ length: 150 }, () => ({
+    x: rand() * W, y: rand() * H, l: 18 + rand() * 60, v: 0.25 + rand() * 0.5, a: 0.06 + rand() * 0.16,
+  }));
+  ff.lastT = 0;
+}
+
+// Figura en caída libre, de frente, brazos abiertos. (0,0) = cadera; mide ~190 * s.
+function fallingFigure(g, s, t) {
+  const f1 = Math.sin(t * 0.0031) * 3, f2 = Math.sin(t * 0.0027 + 1) * 3;
+  const P = (x, y) => [x * s, y * s];
+  // Segmento con grosor propio y extremos redondeados
+  const seg = (a, b, w) => {
+    g.lineWidth = w * s; g.beginPath(); g.moveTo(...P(...a)); g.lineTo(...P(...b)); g.stroke();
+  };
+  const blob = (x, y, r) => { g.beginPath(); g.arc(...P(x, y), r * s, 0, Math.PI * 2); g.fill(); };
+
+  // Pelo largo empujado hacia arriba por el aire: varios mechones que ondulan
+  for (const [base, spread, len, ph] of [[-7, -16, 30, 0], [-3, -6, 38, 1.3], [2, 4, 40, 2.1], [6, 14, 32, 3.4], [8, 22, 24, 4.2]]) {
+    const w = Math.sin(t * 0.005 + ph) * 4;
+    g.beginPath();
+    g.moveTo(...P(base - 3, -68));
+    g.quadraticCurveTo(...P(base + spread * 0.4 + w, -68 - len * 0.6), ...P(base + spread + w * 1.6, -68 - len));
+    g.quadraticCurveTo(...P(base + spread * 0.4 + w + 2, -68 - len * 0.55), ...P(base + 3, -68));
+    g.closePath(); g.fill();
+  }
+
+  // Cabeza y cuello
+  g.beginPath(); g.ellipse(...P(0, -63), 10 * s, 11 * s, 0, 0, Math.PI * 2); g.fill();
+  seg([0, -56], [0, -48], 7);
+
+  // Torso con chaqueta: hombros anchos, cintura estrecha, bajos que aletean hacia arriba
+  g.beginPath();
+  g.moveTo(...P(-17, -48));
+  g.quadraticCurveTo(...P(-14, -24), ...P(-11, -6));
+  g.quadraticCurveTo(...P(-20 + f1, -14), ...P(-24 + f1, -24));     // bajo izq. levantado
+  g.lineTo(...P(-12, -2)); g.lineTo(...P(12, -2));
+  g.lineTo(...P(24 + f2, -24));
+  g.quadraticCurveTo(...P(20 + f2, -14), ...P(11, -6));
+  g.quadraticCurveTo(...P(14, -24), ...P(17, -48));
+  g.closePath(); g.fill();
+
+  // Brazos abiertos y levantados, como quien se deja caer
+  seg([-15, -46], [-44, -64 + f1], 8);  seg([-44, -64 + f1], [-70, -88 + f1 * 1.5], 6);
+  blob(-72, -91 + f1 * 1.5, 4);
+  seg([15, -46], [44, -64 + f2], 8);    seg([44, -64 + f2], [70, -88 + f2 * 1.5], 6);
+  blob(72, -91 + f2 * 1.5, 4);
+
+  // Piernas sueltas, una más doblada que la otra
+  seg([-7, -2], [-14, 34], 11);  seg([-14, 34], [-18 + f1 * 0.4, 70], 8);
+  seg([7, -2], [18, 30], 11);    seg([18, 30], [16 + f2 * 0.4, 66], 8);
+  seg([-18 + f1 * 0.4, 70], [-24 + f1 * 0.4, 76], 6);
+  seg([16 + f2 * 0.4, 66], [22 + f2 * 0.4, 72], 6);
+}
+
+function drawFreefall(t) {
+  const dt = Math.min(100, t - ff.lastT); ff.lastT = t;
+  ctx.drawImage(staticLayer, 0, 0);
+
+  for (const w of ff.walls) {
+    const tileH = w.c.height, off = (t * w.speed) % tileH;
+    for (const y of [-off, tileH - off]) {
+      ctx.drawImage(w.c, 0, y);                       // izquierda
+      ctx.save(); ctx.translate(W, 0); ctx.scale(-1, 1);
+      ctx.drawImage(w.c, 0, y);                       // derecha (en espejo)
+      ctx.restore();
+    }
+  }
+
+  // Lluvia que sube
+  ctx.strokeStyle = C.text; ctx.lineWidth = 1;
+  for (const r of ff.rain) {
+    r.y -= r.v * dt * 1.4;
+    if (r.y + r.l < 0) { r.y = H + rand() * 80; r.x = rand() * W; }
+    ctx.globalAlpha = r.a;
+    ctx.beginPath(); ctx.moveTo(r.x, r.y); ctx.lineTo(r.x, r.y + r.l); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.drawImage(ff.fog, 0, 0);
+
+  // La figura: se mece despacio; contorno magenta/cian desplazado y silueta negra encima
+  const s = H / 470;
+  ctx.save();
+  ctx.translate(W / 2 + Math.sin(t * 0.00023) * W * 0.02, H * 0.5 + Math.sin(t * 0.0006) * 10);
+  ctx.rotate(Math.sin(t * 0.00035) * 0.09);
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  for (const [dx, col] of [[-2.5, C.magenta], [2.5, C.cyan], [0, "#040307"]]) {
+    ctx.save(); ctx.translate(dx * s, 0);
+    ctx.globalAlpha = col === "#040307" ? 1 : 0.85;
+    ctx.fillStyle = col; ctx.strokeStyle = col;
+    fallingFigure(ctx, s, t);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+// --------------------------------------------------------------- al borde
+// Una figura sentada en el borde de una azotea, de espaldas, sobre una ciudad
+// inmensa. Lluvia fina, un rótulo roto que parpadea y algún relámpago violeta.
+let ed = {};
+
+function buildEdge() {
+  const [c, g] = layer(W, H);
+  const hz = H * 0.5;
+  const sky = g.createLinearGradient(0, 0, 0, hz);
+  sky.addColorStop(0, "#06060b"); sky.addColorStop(1, "#1d0f30");
+  g.fillStyle = sky; g.fillRect(0, 0, W, hz);
+  // Nubes bajas, apenas visibles
+  for (let i = 0; i < 18; i++) {
+    const x = rand() * W, y = hz * (0.15 + rand() * 0.6), r = W * (0.08 + rand() * 0.15);
+    const cl = g.createRadialGradient(x, y, 0, x, y, r);
+    cl.addColorStop(0, "rgba(60,30,90,0.18)"); cl.addColorStop(1, "rgba(60,30,90,0)");
+    g.fillStyle = cl; g.fillRect(x - r, y - r, r * 2, r * 2);
+  }
+  // Torres lejanas
+  let x = 0;
+  while (x < W) {
+    const w = 14 + rand() * 40, h = H * (0.03 + rand() * (rand() < 0.15 ? 0.22 : 0.08));
+    g.fillStyle = "#0e0a18"; g.fillRect(x, hz - h, w, h);
+    x += w + rand() * 6;
+  }
+  // La ciudad abajo: miles de luces, más densas hacia el horizonte
+  const below = g.createLinearGradient(0, hz, 0, H);
+  below.addColorStop(0, "#160c26"); below.addColorStop(1, "#08060e");
+  g.fillStyle = below; g.fillRect(0, hz, W, H - hz);
+  ed.twinkle = [];
+  for (let i = 0; i < 2600; i++) {
+    const yy = hz + Math.pow(rand(), 1.8) * (H * 0.4);
+    const xx = rand() * W, p = rand();
+    const col = p < 0.45 ? C.cyan : p < 0.75 ? C.magenta : "#ffd36e";
+    const a = 0.2 + rand() * 0.6;
+    if (rand() < 0.03) { ed.twinkle.push({ x: xx, y: yy, col, a, ph: rand() * 10 }); continue; }
+    g.globalAlpha = a; g.fillStyle = col; g.fillRect(xx, yy, 1.5, 1.5);
+  }
+  g.globalAlpha = 1;
+  // Resplandor de la ciudad
+  const glow = g.createLinearGradient(0, hz - H * 0.05, 0, hz + H * 0.15);
+  glow.addColorStop(0, "rgba(185,103,255,0)"); glow.addColorStop(0.4, "rgba(185,103,255,0.16)");
+  glow.addColorStop(1, "rgba(185,103,255,0)");
+  g.fillStyle = glow; g.fillRect(0, hz - H * 0.05, W, H * 0.2);
+  // Azotea en primer plano, con el borde iluminado por la ciudad
+  const roof = H * 0.86;
+  g.fillStyle = "#040307"; g.fillRect(0, roof, W, H - roof);
+  g.fillStyle = "rgba(185,103,255,0.45)"; g.fillRect(0, roof, W, 1.5);
+  // Poste del rótulo
+  ed.sign = { x: W * 0.12, y: roof - H * 0.26 };
+  g.fillStyle = "#08070d"; g.fillRect(ed.sign.x + 60, ed.sign.y + 40, 5, roof - ed.sign.y - 40);
+  staticLayer = c;
+  ed.roof = roof;
+  ed.rain = Array.from({ length: 170 }, () => ({
+    x: rand() * W, y: rand() * H, l: 10 + rand() * 26, v: 0.35 + rand() * 0.35, a: 0.06 + rand() * 0.14,
+  }));
+  ed.lastT = 0; ed.flash = 0; ed.nextFlash = 9000 + rand() * 12000;
+}
+
+// Figura sentada de espaldas en el borde. (0,0) = punto donde se sienta.
+function sittingFigure(g, s, breath) {
+  g.beginPath();
+  g.moveTo(-26 * s, 0);
+  g.quadraticCurveTo(-30 * s, -40 * s, (-22) * s, (-62 - breath) * s);   // espalda y hombro izq.
+  g.quadraticCurveTo(-12 * s, (-72 - breath) * s, -6 * s, (-70 - breath) * s);
+  g.lineTo(6 * s, (-70 - breath) * s);
+  g.quadraticCurveTo(12 * s, (-72 - breath) * s, 22 * s, (-62 - breath) * s);
+  g.quadraticCurveTo(30 * s, -40 * s, 26 * s, 0);
+  g.closePath(); g.fill();
+  // Cabeza algo inclinada, con capucha
+  g.beginPath(); g.ellipse(2 * s, (-84 - breath) * s, 12 * s, 14 * s, 0.15, 0, Math.PI * 2); g.fill();
+}
+
+function drawEdge(t) {
+  const dt = Math.min(150, t - ed.lastT); ed.lastT = t;
+  ctx.drawImage(staticLayer, 0, 0);
+
+  for (const l of ed.twinkle) {
+    ctx.globalAlpha = l.a * (0.4 + 0.6 * Math.abs(Math.sin(t * 0.0009 + l.ph)));
+    ctx.fillStyle = l.col; ctx.fillRect(l.x, l.y, 1.5, 1.5);
+  }
+
+  // Lluvia fina, algo inclinada
+  ctx.strokeStyle = "#cfd3ff"; ctx.lineWidth = 1;
+  for (const r of ed.rain) {
+    r.y += r.v * dt; r.x -= r.v * dt * 0.18;
+    if (r.y > H) { r.y = -r.l; r.x = rand() * W * 1.1; }
+    ctx.globalAlpha = r.a;
+    ctx.beginPath(); ctx.moveTo(r.x, r.y); ctx.lineTo(r.x - r.l * 0.18, r.y + r.l); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  // Rótulo roto: "NO EXIT", con letras que fallan
+  const sx = ed.sign.x, sy = ed.sign.y;
+  ctx.fillStyle = "#0b0814"; ctx.fillRect(sx - 8, sy - 6, 150, 52);
+  ctx.font = `700 34px "JetBrainsMono Nerd Font", "SF Mono", monospace`;
+  "NO EXIT".split("").forEach((ch, i) => {
+    const broken = (i === 1 || i === 4) && Math.sin(t * 0.017 * (i + 1)) > 0.55;
+    const dead = i === 5 && Math.sin(t * 0.0021) > -0.2;
+    ctx.globalAlpha = dead ? 0.08 : broken ? 0.25 : 0.95;
+    ctx.fillStyle = C.magenta;
+    ctx.shadowColor = C.magenta; ctx.shadowBlur = dead ? 0 : 14;
+    ctx.fillText(ch, sx + i * 20, sy + 34);
+  });
+  ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+
+  // Figura con un leve respirar; contorno violeta por la luz de la ciudad
+  const s = H / 640, breath = Math.sin(t * 0.0012) * 1.2;
+  ctx.save(); ctx.translate(W * 0.5, ed.roof + 2);
+  ctx.fillStyle = "rgba(185,103,255,0.55)"; ctx.save(); ctx.translate(0, -1.5); sittingFigure(ctx, s * 1.02, breath); ctx.restore();
+  ctx.fillStyle = "#030205"; sittingFigure(ctx, s, breath);
+  ctx.restore();
+
+  // Relámpago violeta de vez en cuando (doble destello)
+  if (t > ed.nextFlash) { ed.flash = t; ed.nextFlash = t + 12000 + rand() * 18000; }
+  const since = t - ed.flash;
+  if (since < 700) {
+    const a = since < 90 ? 0.22 : since < 160 ? 0.04 : since < 260 ? 0.16 : 0.16 * (1 - (since - 260) / 440);
+    ctx.fillStyle = `rgba(185,103,255,${Math.max(0, a)})`; ctx.fillRect(0, 0, W, H);
+  }
+}
+
 // ------------------------------------------------------------ comunes
 // Glitch: de vez en cuando una franja se desplaza unos píxeles
 let glitchUntil = 0, nextGlitch = 4000;
@@ -253,10 +532,19 @@ function frame(now) {
   if (document.hidden || now - last < 1000 / FPS) return;
   last = now;
   const t = now - t0;
-  MODE === "minimal" ? drawMinimal(t) : drawCity(t);
+  SCENE.draw(t);
   // Tras un glitch toca repintar entero para borrar las franjas desplazadas
-  fullRedraw = glitch(t);
+  fullRedraw = SCENE.glitch ? glitch(t) : false;
 }
+
+const SCENES = {
+  city:     { build: buildCity,     draw: drawCity,     fps: 24, glitch: true },
+  minimal:  { build: buildMinimal,  draw: drawMinimal,  fps: 12, glitch: true },
+  freefall: { build: buildFreefall, draw: drawFreefall, fps: 24, glitch: true },
+  edge:     { build: buildEdge,     draw: drawEdge,     fps: 15, glitch: false },
+};
+const SCENE = SCENES[MODE] || SCENES.city;
+const FPS = SCENE.fps;
 
 addEventListener("resize", resize);
 resize();

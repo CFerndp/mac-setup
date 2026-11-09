@@ -10,3 +10,4 @@ dotfiles/.config/sketchybar/helpers/*.scpt
 dotfiles/.config/karabiner/assets/
 dotfiles/.config/karabiner/automatic_backups/
 dotfiles/.config/neon-wallpaper/wallpaper
+.claude/

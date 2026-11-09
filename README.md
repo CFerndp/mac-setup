@@ -172,8 +172,17 @@ música · herramientas · entrada/salida · sistema · fecha.
 `dotfiles/.config/neon-wallpaper/`:
 
 - `index.html`: animación Neon Noir en canvas. Modos con `?mode=`:
-  - `city`: ciudad nocturna con sol synthwave y suelo de neón en movimiento (monitor externo);
-  - `minimal`: casi negro con retícula tenue, barrido lento y cursor de terminal (portátil).
+  - `freefall` (**monitor externo, por defecto**): una figura cae con los brazos
+    abiertos entre muros de rascacielos que suben; la lluvia sube y abajo solo hay
+    niebla. Opresión y libertad;
+  - `edge` (**portátil, por defecto**): una figura sentada de espaldas al borde de una
+    azotea sobre una ciudad inmensa, con lluvia fina, un rótulo roto «NO EXIT» y algún
+    relámpago violeta;
+  - `city`: ciudad nocturna con sol synthwave y suelo de neón en movimiento;
+  - `minimal`: casi negro con retícula tenue, barrido lento y cursor de terminal.
+
+  Para usar otros, cambia los argumentos del helper en el plist
+  (`--external city --builtin minimal`) y vuelve a ejecutar `wallpaper.sh on`.
 - `wallpaper.swift`: helper propio que pone esa página en una ventana al nivel del
   escritorio de cada pantalla (debajo de los iconos y de todo). Hace lo que Plash, que
   ya no es open source. Se rehace solo al conectar o quitar pantallas. AeroSpace no lo
@@ -186,8 +195,8 @@ música · herramientas · entrada/salida · sistema · fecha.
   ~/.config/neon-wallpaper/wallpaper.sh on
   ```
 
-- Consumo: resolución normal (no Retina), 24 fps en `city` y 12 en `minimal`, solo se
-  redibuja lo que se mueve. Unos 20 % de un núcleo en total con las dos pantallas.
+- Consumo: resolución normal (no Retina), entre 12 y 24 fps según la escena, sin
+  desenfoques por fotograma y solo se redibuja lo que hace falta. Unos 20 % de un núcleo en total con las dos pantallas.
 
 ## AeroSpace
 

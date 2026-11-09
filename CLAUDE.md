@@ -73,6 +73,11 @@ Se habla en español, también en commits, comentarios y README.
 - `neon-wallpaper/index.html` se pinta en canvas: vigila el consumo (mide con
   `ps -axo %cpu,comm | grep WebKit`). Nada de `shadowBlur` por fotograma ni
   redibujar la pantalla entera si no hace falta.
+- Para ver una escena sin capturas de pantalla: sirve la carpeta con
+  `python3 -m http.server --directory dotfiles/.config/neon-wallpaper` y ábrela en el
+  navegador integrado (`index.html?mode=…`); el navegador sí permite capturas.
+- Tras cambiar el helper: `swiftc -O wallpaper.swift -o wallpaper` y
+  `launchctl kickstart -k gui/$(id -u)/com.cferndp.neon-wallpaper`.
 - El arranque automático (LaunchAgent) lo activa el usuario con `wallpaper.sh on`;
   crear agentes de arranque está bloqueado para Claude.
 
