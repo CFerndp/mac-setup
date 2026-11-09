@@ -16,17 +16,18 @@ for sid in $(aerospace list-workspaces --all); do
   while IFS='|' read -r ws app; do
     [ "$ws" = "$sid" ] || continue
     __icon_map "$app"
-    icons+=" $icon_result"
+    icons+="${icons:+ }$icon_result"
   done <<<"$WINDOWS"
+  if [ -n "$icons" ]; then has=on; else has=off; fi
 
   if [ "$sid" = "$FOCUSED" ]; then
-    args+=(--set "space.$sid" label="$icons" background.drawing=on background.color=$MAGENTA icon.color=$BG label.color=$BG)
+    args+=(--set "space.$sid" label="$icons" label.drawing=$has background.drawing=on background.color=$MAGENTA icon.color=$BG label.color=$BG)
   elif [[ "$VISIBLE" == *" $sid "* ]]; then
-    args+=(--set "space.$sid" label="$icons" background.drawing=on background.color=$SURFACE icon.color=$CYAN label.color=$CYAN)
+    args+=(--set "space.$sid" label="$icons" label.drawing=$has background.drawing=on background.color=$SURFACE icon.color=$CYAN label.color=$CYAN)
   elif [ -n "$icons" ]; then
-    args+=(--set "space.$sid" label="$icons" background.drawing=off icon.color=$TEXT label.color=$TEXT)
+    args+=(--set "space.$sid" label="$icons" label.drawing=on background.drawing=off icon.color=$TEXT label.color=$TEXT)
   else
-    args+=(--set "space.$sid" label="" background.drawing=off icon.color=$MUTED label.color=$MUTED)
+    args+=(--set "space.$sid" label="" label.drawing=off background.drawing=off icon.color=$MUTED label.color=$MUTED)
   fi
 done
 
