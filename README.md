@@ -71,7 +71,7 @@ Brewfile             → everything installed with Homebrew
 |---|---|
 | `~/.aerospace.toml` | AeroSpace with Omarchy's shortcuts |
 | `~/.config/aerospace/minimize.sh` | Minimize and restore windows (SUPER+M / SUPER+Shift+M); remembers the order they were minimized in |
-| `~/.config/karabiner/karabiner.json` | Caps Lock = SUPER (ctrl+opt+cmd); a quick tap = Caps Lock |
+| `~/.config/karabiner/karabiner.json` | Caps Lock = SUPER (ctrl+opt+cmd); a quick tap = Caps Lock. Control and Command swapped and text navigation as on Windows/Linux (see below) |
 | `~/.wezterm.lua` | WezTerm: JetBrainsMono Nerd Font 14 pt, Neon Noir palette, 85 % opacity with blur, no title bar |
 | `~/.config/sketchybar/` | Floating, rounded top bar (see below). Colors in `colors.sh`, scripts in `plugins/`, app icons in `plugins/icon_map.sh` (from sketchybar-app-font v3.0.21) |
 | `~/.config/borders/bordersrc` | Magenta→cyan gradient border on the active window |
@@ -82,6 +82,20 @@ Brewfile             → everything installed with Homebrew
 | `~/Library/Application Support/lazygit/config.yml` | lazygit with rounded borders and Neon Noir colors |
 | `~/.zshrc` (not in the repo) | Oh My Zsh + Powerlevel10k. First line: fastfetch, in WezTerm only; after `~/.p10k.zsh`: the Neon Noir theme (`snippets/zshrc.sh`) |
 | VS Code `settings.json` (not in the repo) | External terminal = WezTerm and Neon Noir colors on top of "Default Dark Modern" (`snippets/vscode-neon-noir.jsonc`) |
+
+## Control works like on Windows/Linux (Karabiner)
+
+So the same shortcuts work on every OS:
+
+- **Control and Command are swapped:** Ctrl+C / V / Z / S / W / Q / F / T… do what they do
+  on Windows/Linux, and the macOS Control is on the Command key.
+- **Text navigation:** Ctrl+←/→ jumps a word (with Shift it selects), Ctrl+Backspace /
+  Delete deletes a word, Home/End go to the start/end of the line and Ctrl+Home/End to the
+  start/end of the document.
+- **Except in WezTerm**, where nothing changes, as in a Linux terminal: Ctrl+C interrupts
+  and Ctrl+Shift+C / Ctrl+Shift+V copy and paste (WezTerm's defaults).
+- SUPER (Caps Lock) is not affected. To turn it off, disable those two rules in
+  Karabiner-Elements → Complex Modifications.
 
 ## System settings
 
