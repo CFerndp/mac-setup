@@ -15,6 +15,10 @@ cd mac-setup
 
 `setup.sh` instala todo con Homebrew, aplica los ajustes de macOS y ejecuta `link.sh`.
 
+`Brewfile` es la foto exacta de todo lo instalado con Homebrew (sin extensiones de
+VS Code). Para reinstalarlo todo de una vez: `brew bundle --file Brewfile`. Para
+actualizarlo tras instalar algo: `brew bundle dump --file Brewfile --force --no-vscode`.
+
 `link.sh` enlaza cada archivo de `dotfiles/` en su sitio de `~` (si ya existe uno, lo
 guarda como `.bak-<fecha>`) y compila los helpers de SketchyBar. Como son enlaces,
 editar la config en `~` es editar el repo: basta con hacer commit.
@@ -33,11 +37,15 @@ dotfiles/            → se enlaza en ~ (misma ruta)
   .config/borders/      bordes de ventana
   .config/karabiner/    Caps Lock = SUPER
   .config/fastfetch/
+  .config/neon-noir/     tema de la shell (colores de Powerlevel10k y fzf)
+  .config/btop/themes/   tema de btop
+  Library/Application Support/lazygit/config.yml   tema de lazygit
   .config/neon-wallpaper/  fondo animado (index.html + helper wallpaper.swift)
   .config/zed/themes/neon-noir.json
 snippets/            → trozos para pegar en ~/.zshrc, Zed y VS Code
 setup.sh             → instalación completa
 link.sh              → solo los enlaces y los helpers
+Brewfile             → todo lo instalado con Homebrew
 ```
 
 ## Instalado con Homebrew (`setup.sh`)
@@ -63,7 +71,10 @@ link.sh              → solo los enlaces y los helpers
 | `~/.config/borders/bordersrc` | Borde con degradado magenta→cian en la ventana activa |
 | `~/.config/zed/themes/neon-noir.json` | Tema Neon Noir para Zed (se activa con `snippets/zed-settings.jsonc`) |
 | `~/.config/fastfetch/config.jsonc` | fastfetch con el logo de Apple en degradado neón |
-| `~/.zshrc` (fuera del repo) | Oh My Zsh + Powerlevel10k. Primera línea: fastfetch, solo en WezTerm (`snippets/zshrc.sh`) |
+| `~/.config/neon-noir/theme.zsh` | Colores Neon Noir para el prompt de Powerlevel10k (solo colores, el estilo no cambia) y para fzf |
+| `~/.config/btop/themes/neon-noir.theme` | Tema de btop (`link.sh` pone `color_theme = "neon-noir"` en `btop.conf`) |
+| `~/Library/Application Support/lazygit/config.yml` | lazygit con bordes redondeados y colores Neon Noir |
+| `~/.zshrc` (fuera del repo) | Oh My Zsh + Powerlevel10k. Primera línea: fastfetch, solo en WezTerm; tras `~/.p10k.zsh`: el tema Neon Noir (`snippets/zshrc.sh`) |
 | VS Code `settings.json` (fuera del repo) | Terminal externa = WezTerm y colores Neon Noir sobre "Default Dark Modern" (`snippets/vscode-neon-noir.jsonc`) |
 
 ## Ajustes del sistema
@@ -197,6 +208,14 @@ música · herramientas · entrada/salida · sistema · fecha.
   ~/.config/neon-wallpaper/wallpaper.sh on
   ```
 
+- **Fondo estático a juego:** `~/.config/neon-wallpaper/wallpaper set-static` saca un
+  fotograma de cada escena a la resolución de cada pantalla (en `static/`, fuera de
+  git) y lo pone como fondo normal de macOS. Es lo que se ve en la pantalla de
+  bloqueo, en Mission Control y mientras el animado está en pausa. Vuelve a lanzarlo
+  si cambias de escena o de monitor.
+- **Batería:** con batería o en modo de bajo consumo, el animado se pausa y se oculta
+  (se ve el estático); al enchufar vuelve solo. Para que siga animado con batería,
+  añade `--keep-on-battery` a los argumentos del plist.
 - Consumo: resolución normal (no Retina), entre 12 y 24 fps según la escena, sin
   desenfoques por fotograma y solo se redibuja lo que hace falta. Unos 20 % de un núcleo en total con las dos pantallas.
 

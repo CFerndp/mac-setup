@@ -1,0 +1,17 @@
+# lazygit con el tema Neon Noir
+gui:
+  border: rounded
+  nerdFontsVersion: "3"
+  theme:
+    activeBorderColor: ["#ff2a6d", bold]
+    inactiveBorderColor: ["#3a3a52"]
+    searchingActiveBorderColor: ["#05d9e8", bold]
+    optionsTextColor: ["#05d9e8"]
+    selectedLineBgColor: ["#2a1b3d"]
+    inactiveViewSelectedLineBgColor: ["#1f1f2e"]
+    cherryPickedCommitFgColor: ["#b967ff"]
+    cherryPickedCommitBgColor: ["#2a1b3d"]
+    markedBaseCommitFgColor: ["#05d9e8"]
+    markedBaseCommitBgColor: ["#1f1f2e"]
+    unstagedChangesColor: ["#ff2a6d"]
+    defaultFgColor: ["#d7d7e8"]

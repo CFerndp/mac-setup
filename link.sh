@@ -30,7 +30,19 @@ link .config/aerospace
 link .config/karabiner
 link .config/fastfetch
 link .config/neon-wallpaper
+link .config/neon-noir
+link .config/btop/themes/neon-noir.theme
+link "Library/Application Support/lazygit/config.yml"
 link .config/zed/themes/neon-noir.json
+
+# btop: activar el tema (btop reescribe su btop.conf al salir, así que no se enlaza)
+BTOP_CONF="$HOME/.config/btop/btop.conf"
+if [ -f "$BTOP_CONF" ] && grep -q '^color_theme' "$BTOP_CONF"; then
+  sed -i '' 's|^color_theme = .*|color_theme = "neon-noir"|' "$BTOP_CONF"
+else
+  printf 'color_theme = "neon-noir"\ntheme_background = False\n' >> "$BTOP_CONF"
+fi
+echo "ok   btop -> neon-noir"
 
 echo "==> Helpers de SketchyBar"
 cd "$REPO/dotfiles/.config/sketchybar/helpers"

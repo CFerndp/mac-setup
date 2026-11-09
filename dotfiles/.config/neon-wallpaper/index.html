@@ -13,6 +13,9 @@
     window    la misma figura, sentada en el suelo frente a un ventanal con lluvia
   Pensado para gastar poco: resolución normal (no Retina), pocos fps, capas fijas
   pre-renderizadas, solo se redibuja lo que se mueve y se pausa si no se ve.
+  Otros parámetros:
+    ?still=1        pinta un fotograma y se queda quieto (para sacar el fondo estático)
+    setPaused(bool) lo llama el helper para pausar con batería o en bajo consumo
 -->
 <style>
   html, body { margin: 0; height: 100%; overflow: hidden; background: #0b0b12; }
@@ -671,10 +674,11 @@ function glitch(t) {
   return true;
 }
 
-let last = 0;
+let last = 0, paused = false;
+window.setPaused = (p) => { paused = p; };
 function frame(now) {
   requestAnimationFrame(frame);
-  if (document.hidden || now - last < 1000 / FPS) return;
+  if (paused || document.hidden || now - last < 1000 / FPS) return;
   last = now;
   const t = now - t0;
   SCENE.draw(t);
@@ -694,7 +698,13 @@ const FPS = SCENE.fps;
 
 addEventListener("resize", resize);
 resize();
-requestAnimationFrame(frame);
+if (params.get("still")) {
+  // Un fotograma "asentado" (gotas y lluvia ya repartidas), sin animación ni glitch
+  for (let t = 0; t <= 4000; t += 1000 / 15) SCENE.draw(t);
+  window.stillReady = true;
+} else {
+  requestAnimationFrame(frame);
+}
 </script>
 </body>
 </html>

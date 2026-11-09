@@ -16,6 +16,8 @@ Se habla en español, también en commits, comentarios y README.
 - `snippets/` guarda lo que vive en archivos personales que no están en el repo
   (`~/.zshrc`, `settings.json` de Zed y VS Code). Si los cambias, actualiza el snippet.
 - El README documenta todo lo instalado y configurado; mantenlo al día con cada cambio.
+- Tras instalar algo con Homebrew, regenera el `Brewfile`:
+  `brew bundle dump --file Brewfile --force --no-vscode`.
 
 ## Restricciones
 
@@ -98,6 +100,9 @@ fastfetch, el tema de Zed y el snippet de VS Code; cambia todos a la vez):
 | Verde | `#00ff9f` |
 | Amarillo | `#f3e600` |
 | Rojo | `#d1001f` |
+
+La paleta también está en `.config/neon-noir/theme.zsh` (prompt y fzf), en el tema de
+btop y en la config de lazygit.
 
 Iconos: JetBrainsMono Nerd Font; iconos de apps con `sketchybar-app-font`
 (`plugins/icon_map.sh`, de su release v3.0.21).
