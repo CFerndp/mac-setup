@@ -133,6 +133,8 @@ music · tools (tiling, screenshots…) · input/output · system · date.
   - Each display's workspaces with the icons of their apps, animated on change. A
     single script paints them all (`plugins/spaces.sh`, run by the hidden
     `spaces.observer` item) instead of one script per workspace.
+    When a display is plugged in or out, `plugins/displays.sh` reloads the bar so the
+    workspaces follow AeroSpace (with only the laptop, 1–10 all show there).
   - Active app: its icon (name on hover). **Click: the workspaces are swapped for the
     app's menus** (File, Edit…), and another click brings them back. This replaces the
     macOS menu bar.

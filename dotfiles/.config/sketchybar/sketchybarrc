@@ -247,15 +247,17 @@ sketchybar --add item media right \
 island island.media media
 
 # =============================== Notch ===============================
-# Detecta la pantalla con cámara y vuelve a ajustar cuando cambian las pantallas
+# Detecta la pantalla con cámara. Si cambian las pantallas (p. ej. se quita el HDMI),
+# displays.sh recarga la barra para repartir los escritorios en las que haya.
 NOTCH="python3 $HELPERS/notch.py"
-sketchybar --add item notch.watch left \
-           --subscribe notch.watch display_change system_woke \
-           --set notch.watch drawing=off updates=on \
-                 script="$NOTCH detect; $NOTCH fit"
+sketchybar --add item displays.watch left \
+           --subscribe displays.watch display_change system_woke \
+           --set displays.watch drawing=off updates=on \
+                 script="$PLUGIN_DIR/displays.sh"
 
 # ================================ Inicio ================================
 rm -f "${TMPDIR:-/tmp}/sketchybar_menus_on"
 $NOTCH detect
+"$PLUGIN_DIR/displays.sh" save
 sketchybar --update
 sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$(aerospace list-workspaces --focused)"
