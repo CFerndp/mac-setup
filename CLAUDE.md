@@ -48,10 +48,12 @@ al actualizarlo, escríbelo en inglés.
 
 ## SketchyBar
 
-- **Filosofía: solo iconos.** El dato aparece al pasar el ratón (`plugins/hover.sh`:
-  `source` + `hover "texto"` + `"${HOVER_ARGS[@]}"`, y suscribir el item a
-  `mouse.entered mouse.exited`). El clic abre un popup con más. El color del icono
-  avisa de estados importantes (batería baja, CPU alta, música sonando).
+- **Filosofía: solo iconos.** El dato aparece al pasar el ratón en un tooltip debajo
+  del icono, sin cambiar el ancho de la barra (`plugins/hover.sh`: `source` +
+  `hover "texto"` + `"${HOVER_ARGS[@]}"`, suscribir el item a `mouse.entered mouse.exited`
+  y llamar a `tip <item> <left|right>` en `sketchybarrc` justo antes de añadirlo).
+  El clic abre un popup con más. El color del icono avisa de estados importantes
+  (batería baja, CPU alta, música sonando).
 - Islas: cada grupo de iconos va en un bracket con `island <nombre> <miembros…>` y
   las islas se separan con `gap`. Un item nuevo debe entrar en la isla que le toque.
 - Popups: usa `$POPUP` para el estilo común, suscribe el item a `mouse.exited.global`

@@ -29,6 +29,22 @@ POPUP="popup.background.color=$BG popup.background.corner_radius=12 \
        popup.background.border_width=1 popup.background.border_color=$VIOLET \
        popup.blur_radius=30 popup.y_offset=6"
 
+# Tooltip (lo enciende plugins/hover.sh): un ancla de ancho 0 en el borde exterior del
+# item, cuyo popup lleva el texto. Se llama justo ANTES de añadir el item.
+# tip <item> <left|right> [propiedades extra del ancla, p. ej. display=active]
+TIP_STYLE="popup.background.color=$BG popup.background.corner_radius=8 \
+           popup.background.border_width=1 popup.background.border_color=$SURFACE \
+           popup.blur_radius=30 popup.y_offset=4"
+tip() {
+  local item="$1" side="$2"; shift 2
+  sketchybar --add item "tip.$item" "$side" \
+             --set "tip.$item" width=0 padding_left=0 padding_right=0 \
+                   icon.drawing=off label.drawing=off popup.align="$side" $TIP_STYLE "$@" \
+             --add item "tip.$item.text" "popup.tip.$item" \
+             --set "tip.$item.text" icon.drawing=off label.font="$FONT:Bold:12.0" \
+                   label.padding_left=10 label.padding_right=10
+}
+
 island() { # island <nombre> <miembros...>
   local name="$1"; shift
   sketchybar --add bracket "$name" "$@" --set "$name" $ISLAND
@@ -70,6 +86,7 @@ sketchybar --add item spaces.observer left \
 gap gap.left1 left
 
 # --- App activa + sus menús (clic en la app = alternar escritorios / menús) ---
+tip front_app left display=active
 sketchybar --add item front_app left \
            --subscribe front_app front_app_switched mouse.clicked $HOVER \
            --set front_app display=active \
@@ -95,6 +112,7 @@ island island.app front_app '/menu\..*/'
 # (se añaden de derecha a izquierda)
 
 # --- Fecha ---
+tip clock right
 sketchybar --add item clock right \
            --subscribe clock $HOVER \
            --set clock update_freq=10 icon=󰥔 icon.color=$MAGENTA \
@@ -103,10 +121,12 @@ island island.clock clock
 gap gap.right1 right
 
 # --- Sistema: batería y CPU ---
+tip battery right
 sketchybar --add item battery right \
            --subscribe battery system_woke power_source_change $HOVER \
-           --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
-           --add item cpu right \
+           --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh"
+tip cpu right
+sketchybar --add item cpu right \
            --subscribe cpu mouse.clicked $HOVER \
            --set cpu update_freq=5 icon=󰻠 icon.color=$CYAN \
                  script="$PLUGIN_DIR/cpu.sh"
@@ -114,10 +134,12 @@ island island.system battery cpu
 gap gap.right2 right
 
 # --- Entrada / salida: red, volumen, teclado, audio ---
+tip network right
 sketchybar --add item network right \
            --subscribe network wifi_change system_woke mouse.clicked $HOVER \
            --set network update_freq=30 script="$PLUGIN_DIR/network.sh"
 
+tip volume right
 sketchybar --add item volume right \
            --subscribe volume volume_change mouse.clicked mouse.scrolled mouse.exited.global $HOVER \
            --set volume icon.color=$VIOLET script="$PLUGIN_DIR/volume.sh" $POPUP
@@ -140,11 +162,13 @@ sketchybar --add slider volume.slider popup.volume 180 \
            --add item volume.next popup.volume \
            --set volume.next icon=󰒭 icon.color=$CYAN label="Siguiente" click_script="$MEDIAKEY next"
 
+tip keyboard right
 sketchybar --add event input_change AppleSelectedInputSourcesChangedNotification \
            --add item keyboard right \
            --subscribe keyboard input_change mouse.clicked mouse.exited.global $HOVER \
            --set keyboard icon=󰌌 icon.color=$VIOLET script="$PLUGIN_DIR/keyboard.sh" $POPUP
 
+tip audio right
 sketchybar --add event audio_change \
            --add item audio right \
            --subscribe audio audio_change system_woke mouse.clicked mouse.exited.global $HOVER \
@@ -152,6 +176,7 @@ sketchybar --add event audio_change \
                  script="$PLUGIN_DIR/audio.sh" $POPUP
 
 # Brillo del monitor externo (BetterDisplay); oculto si no hay monitor externo
+tip brightness right
 sketchybar --add event brightness_change \
            --add item brightness right \
            --subscribe brightness brightness_change display_change mouse.clicked mouse.scrolled mouse.exited.global $HOVER \
@@ -170,6 +195,7 @@ gap gap.right3 right
 
 # --- Herramientas: tiling, capturas, Docker y avisos sin leer ---
 # Tiling de AeroSpace: clic (o SUPER+Shift+Escape) lo desactiva / activa
+tip tiling right
 sketchybar --add event tiling_change \
            --add item tiling right \
            --subscribe tiling tiling_change mouse.clicked $HOVER \
@@ -195,12 +221,14 @@ done
 # Portapapeles: abre Maccy pulsando su atajo global (Shift+Cmd+C; Maccy no tiene
 # otra forma de abrirse desde fuera). Si cambias el atajo en Maccy, cambia MACCY_KEY.
 MACCY_KEY="8 cmd,shift"
+tip clipboard right
 sketchybar --add item clipboard right \
            --subscribe clipboard $HOVER \
            --set clipboard icon=󰅌 icon.color=$CYAN \
                  click_script="$HELPERS/hotkey $MACCY_KEY" \
                  script="$PLUGIN_DIR/clipboard.sh"
 
+tip docker right
 sketchybar --add item docker right \
            --subscribe docker mouse.clicked mouse.exited.global $HOVER \
            --set docker update_freq=20 updates=on icon=󰡨 icon.color=$CYAN drawing=off \
@@ -209,6 +237,7 @@ sketchybar --add item docker right \
 for app in "Slack|slack" "Microsoft Teams|microsoft_teams" "Microsoft Outlook|microsoft_outlook"; do
   IFS='|' read -r name icon <<<"$app"
   id="notif.$icon"
+  tip "$id" right
   sketchybar --add item "$id" right \
              --subscribe "$id" $HOVER \
              --set "$id" drawing=off updates=on update_freq=10 \
@@ -223,10 +252,11 @@ gap gap.right4 right
 
 # --- Lo que suena en el navegador ---
 FOCUS_TAB='IFS="|" read -r b w t < "${TMPDIR:-/tmp}/sketchybar_media" && osascript "$CONFIG_DIR/helpers/focus_tab.scpt" "$b" "$w" "$t"'
+tip media right
 sketchybar --add item media right \
            --subscribe media mouse.clicked mouse.exited.global $HOVER \
            --set media drawing=off updates=on update_freq=3 \
-                 label.max_chars=28 scroll_texts=on \
+                 label.drawing=off \
                  script="$PLUGIN_DIR/media.sh" $POPUP \
            --add item media.title popup.media \
            --set media.title icon.drawing=off label.color=$TEXT label.font="$FONT:Bold:14.0" \

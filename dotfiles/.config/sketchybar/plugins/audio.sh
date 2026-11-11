@@ -1,16 +1,15 @@
 #!/bin/bash
-# Altavoz y micrófono seleccionados: solo iconos; al pasar el ratón, sus nombres.
+# Altavoz y micrófono seleccionados: solo iconos; al pasar el ratón, sus nombres
+# en un tooltip.
 # Clic = menú para elegir dispositivo.
 export PATH="/opt/homebrew/bin:$PATH"
 source "$CONFIG_DIR/colors.sh"
-HOVER="${TMPDIR:-/tmp}/sketchybar_audio_hover"
+source "$CONFIG_DIR/plugins/hover.sh"
 
 if [ "$SENDER" = "mouse.exited.global" ]; then
   sketchybar --set "$NAME" popup.drawing=off
   exit 0
 fi
-
-short() { [ ${#1} -gt 14 ] && printf '%s…' "${1:0:13}" || printf '%s' "$1"; }
 
 icon_for() {
   case "$1" in
@@ -50,14 +49,5 @@ if [ "$SENDER" = "mouse.clicked" ]; then
   exit 0
 fi
 
-case "$SENDER" in
-  mouse.entered) touch "$HOVER" ;;
-  mouse.exited)  rm -f "$HOVER" ;;
-esac
-
-if [ -f "$HOVER" ]; then
-  LABEL="$(short "$OUT")  󰍬 $(short "$IN")"
-else
-  LABEL="󰍬"
-fi
-sketchybar --animate tanh 10 --set "$NAME" icon="$(icon_for "$OUT")" label="$LABEL"
+hover "$(icon_for "$OUT") $OUT   󰍬 $IN"
+sketchybar --set "$NAME" icon="$(icon_for "$OUT")" label="󰍬"

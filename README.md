@@ -121,8 +121,10 @@ No third-party extensions: in Zed it is a custom theme and in VS Code it is colo
 
 ### Bar (SketchyBar)
 
-**Philosophy:** icons only. The data shows on hover (via `plugins/hover.sh`) and a
-click leads to more. Colors warn you without hovering. Popups close by themselves when
+**Philosophy:** icons only. The data shows on hover in a tooltip below the icon (via
+`plugins/hover.sh`), so the bar never changes size and icons don't move under the mouse.
+It appears after 0.35 s (so sweeping across the bar doesn't light them up) and hides on
+click. A click leads to more. Colors warn you without hovering. Popups close by themselves when
 the mouse leaves the bar.
 
 The bar is transparent and the icons sit in **islands** (brackets with their own
@@ -176,8 +178,7 @@ music · tools (tiling, screenshots…) · input/output · system · date.
 - **Notch (laptop camera):** `helpers/notch.py` finds the display with a notch
   (`detect`) and, when something grows towards the camera, trims it (`fit`):
   - app menus that don't fit → a **»** button with a dropdown holding the rest;
-  - workspaces → lose their app icons (inactive ones first), leaving the number;
-  - music title → shortened.
+  - workspaces → lose their app icons (inactive ones first), leaving the number.
 
   It runs after every workspace, app, music or notification change, and when displays
   are plugged in or out. On displays without a notch it does nothing.
