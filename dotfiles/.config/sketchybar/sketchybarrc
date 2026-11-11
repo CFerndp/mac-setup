@@ -176,6 +176,14 @@ sketchybar --add event audio_change \
                  script="$PLUGIN_DIR/audio.sh" $POPUP
 
 # Brillo del monitor externo (BetterDisplay); oculto si no hay monitor externo
+# Bluetooth: dispositivos emparejados (helpers/bluetooth)
+sketchybar --add event bluetooth_change
+tip bluetooth right
+sketchybar --add item bluetooth right \
+           --subscribe bluetooth bluetooth_change system_woke mouse.clicked mouse.exited.global $HOVER \
+           --set bluetooth update_freq=15 icon=󰂯 icon.color=$TEXT \
+                 script="$PLUGIN_DIR/bluetooth.sh" $POPUP
+
 tip brightness right
 sketchybar --add event brightness_change \
            --add item brightness right \
@@ -190,7 +198,7 @@ sketchybar --add event brightness_change \
                  slider.knob=󰝤 slider.knob.color=$CYAN \
                  script="$PLUGIN_DIR/brightness_slider.sh"
 
-island island.io network volume keyboard audio brightness
+island island.io network volume keyboard audio bluetooth brightness
 gap gap.right3 right
 
 # --- Herramientas: tiling, capturas, Docker y avisos sin leer ---

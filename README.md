@@ -152,6 +152,7 @@ music · tools (tiling, screenshots…) · input/output · system · date.
   | Docker (green = containers running, hidden if Docker is not running) | Running count | List; clicking one opens its logs in WezTerm; "Abrir lazydocker" | |
   | Speaker and mic | Names | Pick a device | Right click: Sound settings |
   | Keyboard | Layout (US / ES / ABC) | Switch | |
+  | Bluetooth (cyan = something connected, grey = off) | Connected devices | Paired devices: click one to connect / disconnect; Bluetooth settings | Right click: Bluetooth settings |
   | Volume (the icon shows the level) | % | Slider, mute and playback controls | Scroll wheel: up/down. Right click: Sound settings |
   | External display brightness (BetterDisplay; hidden without an external display) | % | Slider | Scroll wheel: up/down |
   | Network (Wi-Fi, cable, or red when offline) | Type and IP | macOS Wi-Fi / Network settings | |
@@ -172,6 +173,9 @@ music · tools (tiling, screenshots…) · input/output · system · date.
   the red Dock badge through Accessibility (`badges` lists them all, `badges Slack` prints
   one). `lsappinfo` no longer exposes them on macOS 27. Needs Accessibility permission
   for SketchyBar, and the app must be running (it shows in the Dock).
+- Bluetooth uses `helpers/bluetooth` (`bluetooth.swift`, public IOBluetooth API):
+  `bluetooth status`, `bluetooth list` and `bluetooth toggle <address>`. Turning Bluetooth
+  itself on or off has no public API, so that is done from Settings.
 - App menus use `helpers/menus` (`menus.swift`): `menus list` and `menus select <n>`.
   FelixKratz's idea, rewritten in Swift with public APIs. Needs Accessibility
   permission for SketchyBar.

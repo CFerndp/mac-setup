@@ -48,7 +48,7 @@ done < <(sed -nE 's/^link "?([^"]+)"?$/\1/p' "$REPO/link.sh")
 
 section "Compiled helpers"
 H="$HOME/.config/sketchybar/helpers"
-for f in "$H/inputsource" "$H/mediakey" "$H/menus" "$H/hotkey" "$H/badges" "$H/music_tabs.scpt" "$H/focus_tab.scpt" \
+for f in "$H/inputsource" "$H/mediakey" "$H/menus" "$H/hotkey" "$H/badges" "$H/bluetooth" "$H/music_tabs.scpt" "$H/focus_tab.scpt" \
          "$HOME/.config/neon-wallpaper/wallpaper"; do
   if [ -e "$f" ]; then ok "${f/#$HOME/~}"; else bad "${f/#$HOME/~} is missing" "→ ./link.sh (or wallpaper.sh on)"; fi
 done
