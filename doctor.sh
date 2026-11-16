@@ -46,6 +46,19 @@ while read -r path; do
   else bad "~/$path does not point to the repo" "→ ./link.sh"; fi
 done < <(sed -nE 's/^link "?([^"]+)"?$/\1/p' "$REPO/link.sh")
 
+for links in "$REPO"/work/*/links; do # company-only files (work/<company>/)
+  [ -f "$links" ] || continue
+  dir="$(dirname "$links")"
+  while read -r path; do
+    [ -n "$path" ] || continue
+    if [ -L "$HOME/$path" ] && [ "$(readlink "$HOME/$path")" = "$dir/dotfiles/$path" ]; then ok "~/$path ($(basename "$dir"))"
+    else bad "~/$path does not point to the repo" "→ ./link.sh"; fi
+  done < "$links"
+done
+for extra in "$REPO"/work/*/doctor.sh; do # each company's own checks
+  [ -f "$extra" ] && source "$extra"
+done
+
 section "Compiled helpers"
 H="$HOME/.config/sketchybar/helpers"
 for f in "$H/inputsource" "$H/mediakey" "$H/menus" "$H/hotkey" "$H/badges" "$H/bluetooth" "$H/music_tabs.scpt" "$H/focus_tab.scpt" \

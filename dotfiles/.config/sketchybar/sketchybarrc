@@ -57,6 +57,12 @@ gap() { # gap <nombre> <left|right>: separación entre islas
 # ============================== Izquierda ==============================
 
 # --- Escritorios de AeroSpace: una isla por pantalla ---
+# Al iniciar sesión SketchyBar puede arrancar antes que AeroSpace: si este aún no
+# responde, no habría escritorios que pintar. Se espera hasta 30 s.
+for _ in $(seq 1 60); do
+  [ -n "$(aerospace list-monitors 2>/dev/null)" ] && break
+  sleep 0.5
+done
 sketchybar --add event aerospace_workspace_change
 
 for mid in $(aerospace list-monitors --format '%{monitor-id}'); do
@@ -255,7 +261,14 @@ for app in "Slack|slack" "Microsoft Teams|microsoft_teams" "Microsoft Outlook|mi
                    script="$PLUGIN_DIR/notif.sh '$name'"
 done
 
-island island.tools tiling capture clipboard docker '/notif\..*/'
+# Extras de la empresa actual (work/<empresa>/ en el repo): cada uno añade sus items y
+# los apunta en TOOLS_EXTRA para meterlos en esta isla. Sin extras, no hay nada que cargar.
+TOOLS_EXTRA=()
+for extra in "$HOME"/.config/*/sketchybar-tools.sh; do
+  [ -f "$extra" ] && source "$extra"
+done
+
+island island.tools tiling capture clipboard docker "${TOOLS_EXTRA[@]}" '/notif\..*/'
 gap gap.right4 right
 
 # --- Lo que suena en el navegador ---

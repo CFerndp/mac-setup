@@ -6,8 +6,8 @@ set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")" && pwd)"
 
-link() {
-  local src="$REPO/dotfiles/$1" dst="$HOME/$1"
+link() { # link <ruta relativa a ~> [carpeta del repo que la contiene; por defecto dotfiles]
+  local src="${2:-$REPO/dotfiles}/$1" dst="$HOME/$1"
   mkdir -p "$(dirname "$dst")"
   if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
     echo "ok   ~/$1"
@@ -34,6 +34,17 @@ link .config/neon-noir
 link .config/btop/themes/neon-noir.theme
 link "Library/Application Support/lazygit/config.yml"
 link .config/zed/themes/neon-noir.json
+
+# Lo exclusivo de una empresa vive en work/<empresa>/: su archivo "links" dice qué rutas
+# de work/<empresa>/dotfiles se enlazan. Para reusar el repo en otra empresa, borra la carpeta.
+for links in "$REPO"/work/*/links; do
+  [ -f "$links" ] || continue
+  dir="$(dirname "$links")"
+  echo "==> Enlaces de $(basename "$dir")"
+  while read -r path; do
+    [ -n "$path" ] && link "$path" "$dir/dotfiles"
+  done < "$links"
+done
 
 # btop: activar el tema (btop reescribe su btop.conf al salir, así que no se enlaza)
 BTOP_CONF="$HOME/.config/btop/btop.conf"

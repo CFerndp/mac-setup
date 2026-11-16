@@ -16,6 +16,12 @@ al actualizarlo, escríbelo en inglés.
   nuevo, añade también su comprobación ahí.
 - `setup.sh` es la instalación completa en un Mac nuevo. Si instalas algo con
   Homebrew, añádelo aquí también.
+- **Lo exclusivo de GoodHabitz va en `work/goodhabitz/`**, nunca en `dotfiles/`: así el
+  repo se puede reusar en otra empresa borrando esa carpeta. Su archivo `links` dice qué
+  rutas de `work/goodhabitz/dotfiles/` enlaza `link.sh`. Items de la barra: un
+  `~/.config/<x>/sketchybar-tools.sh` que `sketchybarrc` carga solo y que añade el item a
+  `TOOLS_EXTRA`. Comprobaciones: `work/goodhabitz/doctor.sh`. Documentación: su propio
+  `README.md`. Fuera de `work/`, ningún script ni el README deben nombrar la empresa.
 - `snippets/` guarda lo que vive en archivos personales que no están en el repo
   (`~/.zshrc`, `settings.json` de Zed y VS Code). Si los cambias, actualiza el snippet.
 - El README documenta todo lo instalado y configurado; mantenlo al día con cada cambio.

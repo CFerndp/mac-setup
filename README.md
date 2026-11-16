@@ -46,6 +46,7 @@ dotfiles/            → symlinked into ~ (same path)
   Library/Application Support/lazygit/config.yml   lazygit theme
   .config/neon-wallpaper/  animated wallpaper (index.html + wallpaper.swift helper)
   .config/zed/themes/neon-noir.json
+work/<company>/      → company-only config (see "Company-specific: work/"); delete it to reuse the repo elsewhere
 snippets/            → snippets to paste into ~/.zshrc, Zed and VS Code
 setup.sh             → full install
 link.sh              → symlinks and helpers only
@@ -78,6 +79,7 @@ Brewfile             → everything installed with Homebrew
 | `~/.config/zed/themes/neon-noir.json` | Neon Noir theme for Zed (enabled with `snippets/zed-settings.jsonc`) |
 | `~/.config/fastfetch/config.jsonc` | fastfetch with the Apple logo in a neon gradient |
 | `~/.config/neon-noir/theme.zsh` | Neon Noir colors for the Powerlevel10k prompt (colors only, the style is unchanged) and for fzf |
+| `~/.config/*` from `work/<company>/` | Company-only config (see `work/<company>/README.md`) |
 | `~/.config/btop/themes/neon-noir.theme` | btop theme (`link.sh` sets `color_theme = "neon-noir"` in `btop.conf`) |
 | `~/Library/Application Support/lazygit/config.yml` | lazygit with rounded borders and Neon Noir colors |
 | `~/.zshrc` (not in the repo) | Oh My Zsh + Powerlevel10k. First line: fastfetch, in WezTerm only; after `~/.p10k.zsh`: the Neon Noir theme (`snippets/zshrc.sh`) |
@@ -150,6 +152,7 @@ music · tools (tiling, screenshots…) · input/output · system · date.
   | Screenshots | — | Shottr: area, full screen, window, scrolling; macOS screen recording | |
   | Clipboard | "Portapapeles" | Opens Maccy (presses its shortcut, Shift+Cmd+C, with `helpers/hotkey`) | |
   | Docker (green = containers running, hidden if Docker is not running) | Running count | List; clicking one opens its logs in WezTerm; "Abrir lazydocker" | |
+| Company extras from `work/<company>/` (see its README) | | | |
   | Speaker and mic | Names | Pick a device | Right click: Sound settings |
   | Keyboard | Layout (US / ES / ABC) | Switch | |
   | Bluetooth (cyan = something connected, grey = off) | Connected devices | Paired devices: click one to connect / disconnect; Bluetooth settings | Right click: Bluetooth settings |
@@ -216,6 +219,20 @@ music · tools (tiling, screenshots…) · input/output · system · date.
   it's only 10 px.
 - To go back to the macOS menu bar: System Settings → Control Center →
   "Automatically hide and show the menu bar" → Never, and `brew services stop sketchybar`.
+
+## Company-specific: `work/`
+
+Anything that only makes sense at the current company lives in `work/<company>/`
+(one folder per company), never in `dotfiles/`. To reuse this repo at another company,
+delete that folder: nothing else references it by name.
+
+- `work/<company>/links` lists the paths under `work/<company>/dotfiles/` that `link.sh`
+  symlinks into `~` (the same way as `dotfiles/`), and `doctor.sh` checks them.
+- `work/<company>/doctor.sh`, if present, is sourced by `doctor.sh` for its own checks.
+- Each company folder documents itself in its own `README.md`.
+- The bar loads extras generically: `sketchybarrc` sources every
+  `~/.config/*/sketchybar-tools.sh`, which adds its items and appends them to
+  `TOOLS_EXTRA` to join the tools island.
 
 ## Animated wallpaper
 

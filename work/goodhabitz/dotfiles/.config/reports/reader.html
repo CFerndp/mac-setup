@@ -1,0 +1,132 @@
+<!doctype html>
+<!-- Lector de ~/Reports. Plantilla: reports.py mete marked.js y los reports y la
+     escribe en ~/Reports/index.html. No editar el index.html generado. -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports</title>
+<style>
+  :root {
+    --bg: #0b0b12; --surface: #1f1f2e; --muted: #6c6c8a; --text: #d7d7e8;
+    --magenta: #ff2a6d; --cyan: #05d9e8; --violet: #b967ff; --green: #00ff9f;
+    --yellow: #f3e600; --red: #d1001f;
+    --mono: "JetBrainsMono Nerd Font", "JetBrains Mono", ui-monospace, Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--bg); color: var(--text); font: 16px/1.65 var(--sans);
+         display: grid; grid-template-columns: 290px 1fr; }
+
+  /* Barra lateral */
+  nav { border-right: 1px solid var(--surface); height: 100vh; overflow-y: auto;
+        position: sticky; top: 0; padding: 20px 14px; font-family: var(--mono); }
+  nav h1 { font-size: 15px; margin: 0 6px 18px; color: var(--magenta); letter-spacing: .08em; }
+  nav h1 small { display: block; color: var(--muted); font-weight: normal; font-size: 11px; letter-spacing: 0; }
+  nav h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--violet);
+           margin: 18px 6px 6px; }
+  nav a { display: flex; gap: 8px; align-items: baseline; padding: 6px 8px; border-radius: 8px;
+          color: var(--text); text-decoration: none; font-size: 13px; }
+  nav a:hover { background: var(--surface); }
+  nav a.active { background: var(--surface); box-shadow: inset 2px 0 0 var(--magenta); }
+  nav a .date { color: var(--muted); white-space: nowrap; }
+  nav a.ref .date { color: var(--cyan); }
+  nav a .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--magenta);
+               flex: none; align-self: center; visibility: hidden; }
+  nav a.unread .dot { visibility: visible; }
+  nav a.unread { font-weight: bold; }
+
+  /* Contenido */
+  main { padding: 40px 56px 80px; min-width: 0; }
+  article { max-width: 860px; margin: 0 auto; }
+  article h1 { font: bold 28px/1.25 var(--mono); color: var(--magenta); margin: 0 0 8px; }
+  article h2 { font: bold 19px/1.3 var(--mono); color: var(--cyan); margin: 36px 0 10px;
+               padding-bottom: 6px; border-bottom: 1px solid var(--surface); }
+  article h3 { font: bold 16px/1.3 var(--mono); color: var(--violet); margin: 24px 0 8px; }
+  article a { color: var(--cyan); text-decoration-color: rgba(5, 217, 232, .35); }
+  article a:hover { color: var(--magenta); }
+  article strong { color: #fff; }
+  article li { margin: 4px 0; }
+  article li::marker { color: var(--magenta); }
+  article code { font: 13.5px var(--mono); background: var(--surface); padding: 1px 5px; border-radius: 4px; }
+  article pre { background: var(--surface); padding: 14px 16px; border-radius: 10px; overflow-x: auto; }
+  article pre code { padding: 0; background: none; }
+  article blockquote { margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--violet); color: #b8b8cf; }
+  article hr { border: 0; border-top: 1px solid var(--surface); margin: 32px 0; }
+  .table { overflow-x: auto; margin: 16px 0; }
+  article table { border-collapse: collapse; font-size: 14px; width: 100%; }
+  article th, article td { padding: 7px 10px; border-bottom: 1px solid var(--surface); text-align: left; vertical-align: top; }
+  article th { color: var(--violet); font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+  .empty { color: var(--muted); font-family: var(--mono); text-align: center; margin-top: 30vh; }
+
+  @media (max-width: 760px) {
+    body { grid-template-columns: 1fr; }
+    nav { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--surface); }
+    main { padding: 24px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+<nav id="nav"><h1>REPORTS<small>generado {{generated}}</small></h1></nav>
+<main><article id="doc"></article></main>
+<script>/*MARKED*/</script>
+<script>
+const DATA = /*DATA*/null;
+const nav = document.getElementById("nav");
+const doc = document.getElementById("doc");
+const links = {};
+
+// Agrupa por carpeta: reports por fecha (el más reciente arriba) y luego los de referencia
+const groups = {};
+for (const r of DATA.reports) (groups[r.folder] ||= { label: r.label, items: [] }).items.push(r);
+for (const g of Object.values(groups)) {
+  g.items.sort((a, b) => (b.date || "").localeCompare(a.date || "") || (a.date ? -1 : 1));
+  const h = document.createElement("h2");
+  h.textContent = g.label;
+  nav.appendChild(h);
+  for (const r of g.items) {
+    const a = document.createElement("a");
+    a.href = "#" + encodeURIComponent(r.id);
+    a.className = (r.unread ? "unread" : "") + (r.date ? "" : " ref");
+    const d = r.date ? r.date.slice(8, 10) + "/" + r.date.slice(5, 7) : "ref";
+    a.innerHTML = '<span class="dot"></span><span class="date"></span><span class="t"></span>';
+    a.querySelector(".date").textContent = d;
+    a.querySelector(".t").textContent = r.date ? shortTitle(r.title) : r.id.split("/").pop();
+    nav.appendChild(a);
+    links[r.id] = a;
+  }
+}
+
+function shortTitle(t) { // "GoodHabitz: cambios del … (ventana: …)" → lo de en medio
+  const i = t.indexOf(": ");
+  if (i > 0 && i < 30) t = t.slice(i + 2);
+  return t.replace(/\s*\(.*\)\s*$/, "");
+}
+
+function show(id) {
+  const r = DATA.reports.find(x => x.id === id);
+  if (!r) { doc.innerHTML = '<p class="empty">Nada que leer. Elige un report a la izquierda.</p>'; return; }
+  doc.innerHTML = marked.parse(r.md);
+  for (const a of doc.querySelectorAll("a[href^='http']")) { a.target = "_blank"; a.rel = "noopener"; }
+  for (const t of doc.querySelectorAll("table")) {
+    const w = document.createElement("div"); w.className = "table";
+    t.replaceWith(w); w.appendChild(t);
+  }
+  for (const a of Object.values(links)) a.classList.remove("active");
+  const link = links[id];
+  if (link) { link.classList.add("active"); link.classList.remove("unread"); link.scrollIntoView({ block: "nearest" }); }
+  document.title = r.title + " · Reports";
+  window.scrollTo(0, 0);
+}
+
+function route() {
+  const id = decodeURIComponent(location.hash.slice(1));
+  show(id || DATA.current || (DATA.reports.find(r => r.date) || {}).id);
+}
+window.addEventListener("hashchange", route);
+if (DATA.current && !location.hash) history.replaceState(null, "", "#" + encodeURIComponent(DATA.current));
+route();
+</script>
+</body>
+</html>
