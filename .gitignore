@@ -15,3 +15,6 @@ dotfiles/.config/neon-wallpaper/static/
 dotfiles/.config/sketchybar/helpers/hotkey
 dotfiles/.config/sketchybar/helpers/badges
 dotfiles/.config/sketchybar/helpers/bluetooth
+
+# Serena (servidor MCP de navegación de código): config y caché locales
+.serena/
