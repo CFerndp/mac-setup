@@ -280,6 +280,21 @@ delete that folder: nothing else references it by name.
 - **Displays:** workspaces 1–5 on the external display (any display that isn't the
   laptop's) and 6–10 on the laptop. With only the laptop, they all go there. Assumes at
   most two displays.
+- **Apps on their workspace** (`on-window-detected` rules): the AI and Chrome up front,
+  on the external display; on the laptop, what you are checking. They act when a window
+  appears (opening the app or logging in); anything moved by hand stays where you put it.
+
+  | Workspace | Apps |
+  |---|---|
+  | 1 | Claude |
+  | 2 | Orca |
+  | 3 | Chrome (only at startup: new windows later open wherever you are) |
+  | 6 | Slack, Outlook, Teams and Brave (Telegram / WhatsApp web), in accordion |
+  | 7 | Zed |
+  | 8 | DBeaver |
+  | 9 | Bruno |
+
+  4, 5 and 10 are free. Apps without a rule (WezTerm, Finder…) open where you are.
 - **Shortcuts** (some keys refer to a Spanish ISO keyboard):
 
   | Shortcut | Action |
@@ -320,5 +335,4 @@ delete that folder: nothing else references it by name.
 
 ## To do / ideas
 
-- Assign each app to its workspace (Slack → 4, Brave → 2…)
 - Test the display assignment with the office monitor

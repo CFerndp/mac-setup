@@ -56,6 +56,53 @@ gaps.outer.right = 10
     9 = 'built-in'
     10 = 'built-in'
 
+# --- Cada app a su escritorio ---
+# Delante (pantalla externa) la IA y Chrome; en el portátil, lo que se va evaluando.
+# Las reglas actúan al aparecer una ventana (al abrir la app o al iniciar sesión); lo
+# que muevas a mano se queda donde lo dejes.
+[[on-window-detected]]
+    if.app-id = 'com.anthropic.claudefordesktop'
+    run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+    if.app-id = 'com.stablyai.orca'
+    run = 'move-node-to-workspace 2'
+
+# Chrome solo al arrancar: después, sus ventanas nuevas se abren donde estés (p. ej. el 10)
+[[on-window-detected]]
+    if.app-id = 'com.google.Chrome'
+    if.during-aerospace-startup = true
+    run = 'move-node-to-workspace 3'
+
+# Comunicación en el 6, en acordeón. Brave es solo para Telegram y WhatsApp web.
+[[on-window-detected]]
+    if.app-id = 'com.tinyspeck.slackmacgap'
+    run = ['move-node-to-workspace 6', 'layout accordion']
+
+[[on-window-detected]]
+    if.app-id = 'com.microsoft.Outlook'
+    run = ['move-node-to-workspace 6', 'layout accordion']
+
+[[on-window-detected]]
+    if.app-id = 'com.microsoft.teams2'
+    run = ['move-node-to-workspace 6', 'layout accordion']
+
+[[on-window-detected]]
+    if.app-id = 'com.brave.Browser'
+    run = ['move-node-to-workspace 6', 'layout accordion']
+
+[[on-window-detected]]
+    if.app-id = 'dev.zed.Zed'
+    run = 'move-node-to-workspace 7'
+
+[[on-window-detected]]
+    if.app-id = 'org.jkiss.dbeaver.core.product'
+    run = 'move-node-to-workspace 8'
+
+[[on-window-detected]]
+    if.app-id = 'com.usebruno.app'
+    run = 'move-node-to-workspace 9'
+
 [mode.main.binding]
 
     # --- Apps ---
