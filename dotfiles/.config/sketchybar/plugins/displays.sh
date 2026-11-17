@@ -24,7 +24,10 @@ echo $$ > "$STATE.pending"
 sleep 2
 [ "$(cat "$STATE.pending" 2>/dev/null)" = "$$" ] || exit 0
 
-if [ "$(current)" != "$(cat "$STATE" 2>/dev/null)" ]; then
+now=$(current)
+if [ "$now" != "$(cat "$STATE" 2>/dev/null)" ]; then
+  # Se guarda ya: los eventos que lleguen durante la recarga no deben lanzar otra
+  echo "$now" > "$STATE"
   sketchybar --reload
 else
   $NOTCH detect; $NOTCH fit

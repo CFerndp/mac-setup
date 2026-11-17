@@ -122,6 +122,8 @@ gaps.outer.right = 10
     # botón se pone al día solo en unos segundos.
     ctrl-alt-cmd-shift-esc = ['enable toggle',
         'exec-and-forget /opt/homebrew/bin/sketchybar --trigger tiling_change']
+    # Barra: recargarla si se descoloca (también desde el reloj)
+    ctrl-alt-cmd-shift-r = 'exec-and-forget ~/.config/sketchybar/plugins/reset.sh reload'
     # Barra: alternar entre escritorios y menús de la app activa
     ctrl-alt-cmd-shift-space = 'exec-and-forget ~/.config/sketchybar/plugins/menus.sh toggle'
     ctrl-alt-cmd-c = 'exec-and-forget open shottr://grab/area'

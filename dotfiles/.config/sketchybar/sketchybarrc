@@ -5,6 +5,21 @@
 # Filosofía: solo iconos; el dato al pasar el ratón; el clic lleva a más.
 
 export PATH="/opt/homebrew/bin:$PATH"
+
+# Una sola carga a la vez. "sketchybar --reload" borra los items y lanza este script de
+# nuevo, pero no para la carga anterior si aún sigue (p. ej. esperando a AeroSpace al
+# conectar una pantalla): las dos añadirían items a la vez y las islas saldrían
+# mezcladas. Así que se para la anterior y se borra lo que hubiera llegado a añadir.
+RC_PID="${TMPDIR:-/tmp}/sketchybar_rc.pid"
+old=$(cat "$RC_PID" 2>/dev/null)
+if [ -n "$old" ] && [ "$old" != "$$" ] && ps -p "$old" -o command= 2>/dev/null | grep -q sketchybarrc; then
+  pkill -P "$old" 2>/dev/null
+  kill "$old" 2>/dev/null
+  sleep 0.2
+fi
+echo $$ > "$RC_PID"
+sketchybar --remove '/.*/' >/dev/null 2>&1
+
 source "$CONFIG_DIR/colors.sh"
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 HELPERS="$CONFIG_DIR/helpers"
@@ -120,9 +135,15 @@ island island.app front_app '/menu\..*/'
 # --- Fecha ---
 tip clock right
 sketchybar --add item clock right \
-           --subscribe clock $HOVER \
+           --subscribe clock mouse.clicked mouse.exited.global $HOVER \
            --set clock update_freq=10 icon=󰥔 icon.color=$MAGENTA \
-                 script="$PLUGIN_DIR/clock.sh"
+                 script="$PLUGIN_DIR/clock.sh" $POPUP popup.align=right \
+           --add item clock.reload popup.clock \
+           --set clock.reload icon=󰑓 icon.color=$CYAN label="Recargar la barra" \
+                 click_script="sketchybar --set clock popup.drawing=off; $PLUGIN_DIR/reset.sh reload" \
+           --add item clock.restart popup.clock \
+           --set clock.restart icon=󰜉 icon.color=$MAGENTA label="Reiniciar SketchyBar" \
+                 click_script="sketchybar --set clock popup.drawing=off; $PLUGIN_DIR/reset.sh restart"
 island island.clock clock
 gap gap.right1 right
 

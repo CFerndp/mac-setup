@@ -139,6 +139,8 @@ music · tools (tiling, screenshots…) · input/output · system · date.
     `spaces.observer` item) instead of one script per workspace.
     When a display is plugged in or out, `plugins/displays.sh` reloads the bar so the
     workspaces follow AeroSpace (with only the laptop, 1–10 all show there).
+    Only one load runs at a time: a new reload stops the previous one if it's still going,
+    otherwise both would add items at once and the islands would come out mixed up.
   - Active app: its icon (name on hover). **Click: the workspaces are swapped for the
     app's menus** (File, Edit…), and another click brings them back. This replaces the
     macOS menu bar.
@@ -161,7 +163,7 @@ music · tools (tiling, screenshots…) · input/output · system · date.
   | Network (Wi-Fi, cable, or red when offline) | Type and IP | macOS Wi-Fi / Network settings | |
   | CPU (cyan / yellow ≥ 50 % / red ≥ 80 %) | % | Activity Monitor | Right click: btop in WezTerm |
   | Battery (green / yellow / red when low) | %, charging or time left | — | |
-  | Date, Spanish short format "L 09/11 10:37" (weekday initial, day/month, time) | Full date | — | |
+  | Date, Spanish short format "L 09/11 10:37" (weekday initial, day/month, time) | Full date | Reload the bar / restart SketchyBar (if it gets messed up) | Also SUPER + Shift + R (reload) |
 
   The music item may show only "YouTube Music" when that site does not put the song in
   the tab title (for example, while paused).
@@ -305,6 +307,7 @@ delete that folder: nothing else references it by name.
   | SUPER + Shift + G | lazygit in WezTerm |
   | SUPER + Space | App launcher |
   | SUPER + Shift + Space | Bar: toggle workspaces / app menus |
+  | SUPER + Shift + R | Reload the bar (if it gets messed up; also from the clock) |
   | SUPER + Escape | Lock the screen (presses macOS's Ctrl+Cmd+Q) |
   | SUPER + Shift + Escape | Turn tiling off / on (`aerospace enable toggle`): when off, every window is shown and left alone |
   | SUPER + C | Area screenshot (Shottr) |
