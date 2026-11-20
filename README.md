@@ -72,7 +72,7 @@ Brewfile             → everything installed with Homebrew
 |---|---|
 | `~/.aerospace.toml` | AeroSpace with Omarchy's shortcuts |
 | `~/.config/aerospace/minimize.sh` | Minimize and restore windows (SUPER+M / SUPER+Shift+M); remembers the order they were minimized in |
-| `~/.config/karabiner/karabiner.json` | Caps Lock = SUPER (ctrl+opt+cmd); a quick tap = Caps Lock. Control and Command swapped and text navigation as on Windows/Linux (see below) |
+| `~/.config/karabiner/karabiner.json` | Caps Lock = SUPER (ctrl+opt+cmd); a quick tap = Caps Lock. Control and Command swapped and text navigation as on Windows/Linux, and the Corne keyboard adapted (see below) |
 | `~/.wezterm.lua` | WezTerm: JetBrainsMono Nerd Font 14 pt, Neon Noir palette, 85 % opacity with blur, no title bar |
 | `~/.config/sketchybar/` | Floating, rounded top bar (see below). Colors in `colors.sh`, scripts in `plugins/`, app icons in `plugins/icon_map.sh` (from sketchybar-app-font v3.0.21) |
 | `~/.config/borders/bordersrc` | Magenta→cyan gradient border on the active window |
@@ -94,10 +94,16 @@ So the same shortcuts work on every OS:
 - **Text navigation:** Ctrl+←/→ jumps a word (with Shift it selects), Ctrl+Backspace /
   Delete deletes a word, Home/End go to the start/end of the line and Ctrl+Home/End to the
   start/end of the document.
+- **Ctrl+Tab / Ctrl+Shift+Tab** switch tabs (they stay real Control) and **Alt+Tab** switches
+  apps (Option becomes Command once Tab is pressed, so holding Alt and tapping Tab cycles).
+- **Print Screen** (e.g. on an external keyboard): area screenshot with Shottr.
 - **Except in WezTerm**, where nothing changes, as in a Linux terminal: Ctrl+C interrupts
   and Ctrl+Shift+C / Ctrl+Shift+V copy and paste (WezTerm's defaults).
 - SUPER (Caps Lock) is not affected. To turn it off, disable those two rules in
   Karabiner-Elements → Complex Modifications.
+- **Corne split keyboard** (Vial, Linux-first layout; firmware untouched): a rule limited
+  to that keyboard makes it behave as on Linux. Its Super keys (right thumb and NUM + A)
+  are SUPER, and its right Ctrl works like the left one (Ctrl + number switches tabs).
 
 ## System settings
 
