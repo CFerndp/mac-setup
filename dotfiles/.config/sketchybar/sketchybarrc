@@ -144,6 +144,14 @@ sketchybar --add item clock right \
            --add item clock.restart popup.clock \
            --set clock.restart icon=󰜉 icon.color=$MAGENTA label="Reiniciar SketchyBar" \
                  click_script="sketchybar --set clock popup.drawing=off; $PLUGIN_DIR/reset.sh restart"
+# Energía: reiniciar y apagar abren el diálogo de confirmación de macOS.
+for p in "lock|󰌾|$CYAN|Bloquear" "sleep|󰒲|$VIOLET|Suspender" \
+         "restart|󰜉|$YELLOW|Reiniciar el Mac…" "shutdown|󰐥|$RED|Apagar…"; do
+  IFS='|' read -r action icon color label <<< "$p"
+  sketchybar --add item "clock.power.$action" popup.clock \
+             --set "clock.power.$action" icon="$icon" icon.color="$color" label="$label" \
+                   click_script="sketchybar --set clock popup.drawing=off; $PLUGIN_DIR/power.sh $action"
+done
 island island.clock clock
 gap gap.right1 right
 

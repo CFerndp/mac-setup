@@ -1,6 +1,7 @@
 #!/bin/bash
 # Fecha corta "L 09/11 10:37"; al pasar el ratón, la fecha completa en un tooltip.
-# Clic = recargar la barra o reiniciar SketchyBar (por si se descoloca).
+# Clic = recargar la barra o reiniciar SketchyBar (por si se descoloca), y energía:
+# bloquear, suspender, reiniciar y apagar el Mac (plugins/power.sh).
 source "$CONFIG_DIR/plugins/hover.sh"
 
 case "$SENDER" in

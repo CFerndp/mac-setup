@@ -169,7 +169,7 @@ music · tools (tiling, screenshots…) · input/output · system · date.
   | Network (Wi-Fi, cable, or red when offline) | Type and IP | macOS Wi-Fi / Network settings | |
   | CPU (cyan / yellow ≥ 50 % / red ≥ 80 %) | % | Activity Monitor | Right click: btop in WezTerm |
   | Battery (green / yellow / red when low) | %, charging or time left | — | |
-  | Date, Spanish short format "L 09/11 10:37" (weekday initial, day/month, time) | Full date | Reload the bar / restart SketchyBar (if it gets messed up) | Also SUPER + Shift + R (reload) |
+  | Date, Spanish short format "L 09/11 10:37" (weekday initial, day/month, time) | Full date | Reload the bar / restart SketchyBar (if it gets messed up); lock, sleep, restart or shut down the Mac (`plugins/power.sh`; restart and shut down ask first with the native macOS dialog) | Also SUPER + Shift + R (reload) |
 
   The music item may show only "YouTube Music" when that site does not put the song in
   the tab title (for example, while paused).
